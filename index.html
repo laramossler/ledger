@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Ledger — A Private Record of the Art of Entertaining</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FFFDF7;
+    --cream-deep: #F8F5ED;
+    --ink: #1A1A2E;
+    --gold: #B8963E;
+    --gold-light: #D4B86A;
+    --gold-muted: rgba(184, 150, 62, 0.3);
+    --warm-brown: #3D3525;
+    --warm-gray: #9B9485;
+    --rule: #E0DACB;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--cream);
+    color: var(--ink);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Subtle paper texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  .page {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── SECTION: HERO ── */
+
+  .hero {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 32px;
+    text-align: center;
+  }
+
+  .monogram {
+    width: 72px;
+    height: 72px;
+    border: 1.5px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--gold);
+    letter-spacing: 0.02em;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeIn 1.2s ease 0.3s forwards;
+    position: relative;
+  }
+
+  /* Double-line bookbinding detail */
+  .monogram::before {
+    content: '';
+    position: absolute;
+    top: -4px; left: -4px; right: -4px; bottom: -4px;
+    border: 0.5px solid var(--gold-muted);
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(42px, 8vw, 72px);
+    font-weight: 300;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeIn 1.2s ease 0.6s forwards;
+  }
+
+  .hero-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(18px, 3vw, 24px);
+    font-weight: 300;
+    color: var(--warm-brown);
+    line-height: 1.6;
+    max-width: 480px;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeIn 1.2s ease 0.9s forwards;
+  }
+
+  .hero-rule {
+    width: 180px;
+    height: 1px;
+    background: var(--gold);
+    position: relative;
+    opacity: 0;
+    animation: fadeIn 1.2s ease 1.2s forwards;
+  }
+
+  .hero-rule::before {
+    content: '◆';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10px;
+    color: var(--gold);
+    background: var(--cream);
+    padding: 0 12px;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    opacity: 0;
+    animation: fadeIn 1.2s ease 1.8s forwards, gentle-bob 3s ease-in-out 2.5s infinite;
+  }
+
+  /* ── SECTION: PHILOSOPHY ── */
+
+  .philosophy {
+    width: 100%;
+    padding: 120px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .philosophy-ornament {
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.5em;
+    margin-bottom: 48px;
+  }
+
+  .philosophy-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(20px, 3.5vw, 30px);
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--ink);
+    max-width: 600px;
+    margin-bottom: 32px;
+  }
+
+  .philosophy-text em {
+    font-style: italic;
+    color: var(--warm-brown);
+  }
+
+  .philosophy-attribution {
+    font-family: 'Jost', sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-top: 16px;
+  }
+
+  /* ── SECTION: THE IDEA ── */
+
+  .idea {
+    width: 100%;
+    padding: 80px 32px 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .section-rule {
+    width: 120px;
+    height: 1px;
+    background: var(--rule);
+    margin-bottom: 80px;
+    position: relative;
+  }
+
+  .section-rule::before {
+    content: '◆';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 8px;
+    color: var(--gold);
+    background: var(--cream);
+    padding: 0 12px;
+  }
+
+  .idea-columns {
+    max-width: 720px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+  }
+
+  .idea-item {
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .idea-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .idea-label {
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  .idea-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(24px, 4vw, 32px);
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+
+  .idea-body {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--warm-brown);
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  /* ── SECTION: SPECIMEN ── */
+
+  .specimen {
+    width: 100%;
+    padding: 80px 32px 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--cream-deep);
+  }
+
+  .specimen-label {
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 48px;
+  }
+
+  .specimen-page {
+    max-width: 480px;
+    width: 100%;
+    background: var(--cream);
+    border: 0.5px solid var(--rule);
+    padding: 48px 32px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 1px 4px rgba(26, 26, 46, 0.04);
+  }
+
+  /* Subtle inner border like a book page */
+  .specimen-page::before {
+    content: '';
+    position: absolute;
+    top: 8px; left: 8px; right: 8px; bottom: 8px;
+    border: 0.5px solid var(--rule);
+    pointer-events: none;
+  }
+
+  .specimen-date {
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  .specimen-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.3;
+    margin-bottom: 14px;
+  }
+
+  .specimen-purpose {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--warm-brown);
+    line-height: 1.5;
+    margin-bottom: 24px;
+    padding: 0 16px;
+  }
+
+  .specimen-detail {
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 28px;
+  }
+
+  .specimen-menu-label {
+    font-family: 'Jost', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .specimen-menu-label::before,
+  .specimen-menu-label::after {
+    content: '';
+    width: 40px;
+    height: 0.5px;
+    background: var(--rule);
+  }
+
+  .specimen-menu {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    font-weight: 300;
+    color: var(--ink);
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+
+  .specimen-outfit {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--warm-gray);
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+
+  .specimen-guests {
+    font-family: 'Jost', sans-serif;
+    font-size: 9px;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    line-height: 1.8;
+    opacity: 0.7;
+  }
+
+  .specimen-reflection {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 0.5px solid var(--rule);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--warm-brown);
+    line-height: 1.7;
+  }
+
+  /* ── SECTION: PRINCIPLES ── */
+
+  .principles {
+    width: 100%;
+    padding: 120px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .principles-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 300;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+
+  .principles-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--warm-brown);
+    margin-bottom: 72px;
+    max-width: 400px;
+  }
+
+  .principles-grid {
+    max-width: 640px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px 40px;
+  }
+
+  .principle {
+    text-align: center;
+  }
+
+  .principle-name {
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  .principle-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.6;
+    color: var(--warm-brown);
+  }
+
+  /* ── SECTION: CLOSING ── */
+
+  .closing {
+    width: 100%;
+    padding: 80px 32px 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .closing-rule {
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    margin-bottom: 64px;
+  }
+
+  .closing-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(22px, 4vw, 30px);
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--ink);
+    max-width: 520px;
+    margin-bottom: 24px;
+  }
+
+  .closing-italic {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--warm-brown);
+    margin-bottom: 64px;
+    max-width: 400px;
+    line-height: 1.6;
+  }
+
+  .invite-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 36px;
+    border: 1px solid var(--gold);
+    position: relative;
+    cursor: default;
+    transition: all 0.4s ease;
+  }
+
+  .invite-badge::before {
+    content: '';
+    position: absolute;
+    top: -3px; left: -3px; right: -3px; bottom: -3px;
+    border: 0.5px solid var(--gold-muted);
+  }
+
+  .invite-badge-text {
+    font-family: 'Jost', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .invite-badge:hover {
+    background: rgba(184, 150, 62, 0.04);
+  }
+
+  /* ── FOOTER ── */
+
+  .footer {
+    width: 100%;
+    padding: 48px 32px;
+    text-align: center;
+    border-top: 0.5px solid var(--rule);
+  }
+
+  .footer-text {
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    color: var(--warm-gray);
+  }
+
+  /* ── ANIMATIONS ── */
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes gentle-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+  }
+
+  /* ── RESPONSIVE ── */
+
+  @media (max-width: 600px) {
+    .hero { padding: 48px 24px; }
+    .philosophy { padding: 80px 24px; }
+    .idea { padding: 60px 24px 80px; }
+    .specimen { padding: 60px 20px 80px; }
+    .specimen-page { padding: 40px 24px; }
+    .principles { padding: 80px 24px; }
+    .principles-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+    .closing { padding: 60px 24px 120px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="monogram">L</div>
+    <h1 class="hero-title">The Ledger</h1>
+    <p class="hero-subtitle">
+      A private record of the art of entertaining — the menus, the guests, the atmosphere, the memories that make a house a home.
+    </p>
+    <div class="hero-rule"></div>
+    <span class="scroll-hint">Discover</span>
+  </section>
+
+  <!-- ── PHILOSOPHY ── -->
+  <section class="philosophy">
+    <div class="philosophy-ornament">◆ &ensp; ◆ &ensp; ◆</div>
+    <p class="philosophy-text">
+      For generations, the world's finest hostesses have kept private ledgers — handwritten books recording every dinner, every guest, every menu, every seating arrangement. The invisible system behind evenings that feel <em>effortless</em>.
+    </p>
+    <p class="philosophy-text" style="margin-top: 24px; font-style: italic; color: var(--warm-brown);">
+      Nobody has brought them into the digital age. Until now.
+    </p>
+  </section>
+
+  <!-- ── THE IDEA ── -->
+  <section class="idea">
+    <div class="section-rule"></div>
+    <div class="idea-columns">
+      <div class="idea-item">
+        <div class="idea-label">The Record</div>
+        <h3 class="idea-heading">Every evening, documented beautifully</h3>
+        <p class="idea-body">
+          The menu. The wines. The flowers on the table, the music in the background, the scent of beeswax candles. Every detail that made the evening yours — captured in a private book that belongs to your house.
+        </p>
+      </div>
+      <div class="idea-item">
+        <div class="idea-label">The Guest Book</div>
+        <h3 class="idea-heading">A memory that never forgets</h3>
+        <p class="idea-body">
+          What you served the Martins last April. Who Sofia sat next to at Christmas. The conversation that lit up the table. Your guest book builds over time into something no notebook could hold.
+        </p>
+      </div>
+      <div class="idea-item">
+        <div class="idea-label">The Reflection</div>
+        <h3 class="idea-heading">The art of getting better</h3>
+        <p class="idea-body">
+          What felt effortless. What you'd change. Which guest combinations sparked. The lamb that rested too long. The terrace at sunset that was too beautiful to rush. Every evening teaches the next.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SPECIMEN ── -->
+  <section class="specimen">
+    <div class="specimen-label">A Page from The Ledger</div>
+    <div class="specimen-page">
+      <div class="specimen-date">15 March 2025</div>
+      <div class="specimen-title">A Spring Evening<br>in Montreux</div>
+      <div class="specimen-purpose">"To celebrate Sofia's return from Sardinia and the first warm evening of spring"</div>
+      <div class="specimen-detail">Dinner &ensp;·&ensp; Villa Pierrefeu, Lake Geneva Terrace</div>
+      <div class="specimen-menu-label"><span>Menu</span></div>
+      <div class="specimen-menu">
+        Asparagus velouté<br>
+        Dover sole meunière<br>
+        Rack of lamb with spring vegetables<br>
+        Comté, Vacherin Mont-d'Or, aged Gruyère<br>
+        Tarte Tatin with crème fraîche
+      </div>
+      <div class="specimen-outfit">
+        Wore: Navy silk midi dress with cream cashmere wrap — The Row
+      </div>
+      <div class="specimen-guests">
+        Comtesse Sofia de Montague &ensp;·&ensp; Isabelle Hartley-Ross<br>
+        Alexandra Chen-Beaumont &ensp;·&ensp; James & Catherine Aldridge
+      </div>
+      <div class="specimen-reflection">
+        "The light on the lake at sunset was extraordinary. Everyone lingered on the terrace longer than planned — and it was perfect."
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PRINCIPLES ── -->
+  <section class="principles">
+    <h2 class="principles-heading">What The Ledger Holds</h2>
+    <p class="principles-sub">Everything a thoughtful hostess remembers — and everything she wishes she could.</p>
+    <div class="principles-grid">
+      <div class="principle">
+        <div class="principle-name">Menus & Wines</div>
+        <p class="principle-desc">Every course, every pairing, every triumph and every lesson.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-name">Guest Profiles</div>
+        <p class="principle-desc">Dietary needs, preferences, conversation topics, gifting history — the details that make guests feel known.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-name">The Atmosphere</div>
+        <p class="principle-desc">Flowers, table settings, lighting, music, scent — the composition of a room.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-name">Reflections</div>
+        <p class="principle-desc">Honest notes on what worked, what to change, which moments were magic.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-name">The Timeline</div>
+        <p class="principle-desc">The choreography of the evening — from aperitifs to the last digestif.</p>
+      </div>
+      <div class="principle">
+        <div class="principle-name">What You Wore</div>
+        <p class="principle-desc">Because the hostess is part of her own evening — and the record of it.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CLOSING ── -->
+  <section class="closing">
+    <div class="closing-rule"></div>
+    <p class="closing-text">
+      The most elegant evenings<br>are not improvised.<br>
+      They are rehearsed so thoroughly<br>
+      that improvisation becomes possible.
+    </p>
+    <p class="closing-italic">
+      The Ledger is currently available by invitation only.
+    </p>
+    <div class="invite-badge">
+      <span class="invite-badge-text">By Invitation Only</span>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <p class="footer-text">The Ledger &ensp;·&ensp; A private record of the art of entertaining</p>
+  </footer>
+
+</div>
+
+<script>
+  // Intersection Observer for scroll-triggered fade-ins
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.2,
+    rootMargin: '0px 0px -60px 0px'
+  });
+
+  document.querySelectorAll('.idea-item').forEach((el, i) => {
+    el.style.transitionDelay = `${i * 0.15}s`;
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
