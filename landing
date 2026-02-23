@@ -1,759 +1,1229 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Ledger — A Private Record of the Art of Entertaining</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --cream: #FFFDF7;
-    --cream-deep: #F8F5ED;
-    --ink: #1A1A2E;
-    --gold: #B8963E;
-    --gold-light: #D4B86A;
-    --gold-muted: rgba(184, 150, 62, 0.3);
-    --warm-brown: #3D3525;
-    --warm-gray: #9B9485;
-    --rule: #E0DACB;
-  }
-
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  html {
-    scroll-behavior: smooth;
-  }
-
-  body {
-    background-color: var(--cream);
-    color: var(--ink);
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
-  }
-
-  /* Subtle paper texture overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 1000;
-  }
-
-  .page {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  /* ── SECTION: HERO ── */
-
-  .hero {
-    width: 100%;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 32px;
-    text-align: center;
-  }
-
-  .monogram {
-    width: 72px;
-    height: 72px;
-    border: 1.5px solid var(--gold);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 300;
-    color: var(--gold);
-    letter-spacing: 0.02em;
-    margin-bottom: 32px;
-    opacity: 0;
-    animation: fadeIn 1.2s ease 0.3s forwards;
-    position: relative;
-  }
-
-  /* Double-line bookbinding detail */
-  .monogram::before {
-    content: '';
-    position: absolute;
-    top: -4px; left: -4px; right: -4px; bottom: -4px;
-    border: 0.5px solid var(--gold-muted);
-  }
-
-  .hero-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(42px, 8vw, 72px);
-    font-weight: 300;
-    letter-spacing: 0.01em;
-    line-height: 1.1;
-    color: var(--ink);
-    margin-bottom: 24px;
-    opacity: 0;
-    animation: fadeIn 1.2s ease 0.6s forwards;
-  }
-
-  .hero-subtitle {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: clamp(18px, 3vw, 24px);
-    font-weight: 300;
-    color: var(--warm-brown);
-    line-height: 1.6;
-    max-width: 480px;
-    margin-bottom: 48px;
-    opacity: 0;
-    animation: fadeIn 1.2s ease 0.9s forwards;
-  }
-
-  .hero-rule {
-    width: 180px;
-    height: 1px;
-    background: var(--gold);
-    position: relative;
-    opacity: 0;
-    animation: fadeIn 1.2s ease 1.2s forwards;
-  }
-
-  .hero-rule::before {
-    content: '◆';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 10px;
-    color: var(--gold);
-    background: var(--cream);
-    padding: 0 12px;
-  }
-
-  .scroll-hint {
-    position: absolute;
-    bottom: 40px;
-    font-family: 'Jost', sans-serif;
-    font-size: 11px;
-    font-weight: 300;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--warm-gray);
-    opacity: 0;
-    animation: fadeIn 1.2s ease 1.8s forwards, gentle-bob 3s ease-in-out 2.5s infinite;
-  }
-
-  /* ── SECTION: PHILOSOPHY ── */
-
-  .philosophy {
-    width: 100%;
-    padding: 120px 32px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .philosophy-ornament {
-    font-size: 10px;
-    color: var(--gold);
-    letter-spacing: 0.5em;
-    margin-bottom: 48px;
-  }
-
-  .philosophy-text {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(20px, 3.5vw, 30px);
-    font-weight: 300;
-    line-height: 1.8;
-    color: var(--ink);
-    max-width: 600px;
-    margin-bottom: 32px;
-  }
-
-  .philosophy-text em {
-    font-style: italic;
-    color: var(--warm-brown);
-  }
-
-  .philosophy-attribution {
-    font-family: 'Jost', sans-serif;
-    font-size: 12px;
-    font-weight: 300;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--warm-gray);
-    margin-top: 16px;
-  }
-
-  /* ── SECTION: THE IDEA ── */
-
-  .idea {
-    width: 100%;
-    padding: 80px 32px 120px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .section-rule {
-    width: 120px;
-    height: 1px;
-    background: var(--rule);
-    margin-bottom: 80px;
-    position: relative;
-  }
-
-  .section-rule::before {
-    content: '◆';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 8px;
-    color: var(--gold);
-    background: var(--cream);
-    padding: 0 12px;
-  }
-
-  .idea-columns {
-    max-width: 720px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 64px;
-  }
-
-  .idea-item {
-    text-align: center;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-
-  .idea-item.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .idea-label {
-    font-family: 'Jost', sans-serif;
-    font-size: 11px;
-    font-weight: 400;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 20px;
-  }
-
-  .idea-heading {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(24px, 4vw, 32px);
-    font-weight: 400;
-    color: var(--ink);
-    margin-bottom: 16px;
-    line-height: 1.3;
-  }
-
-  .idea-body {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    font-weight: 300;
-    line-height: 1.7;
-    color: var(--warm-brown);
-    max-width: 520px;
-    margin: 0 auto;
-  }
-
-  /* ── SECTION: SPECIMEN ── */
-
-  .specimen {
-    width: 100%;
-    padding: 80px 32px 120px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: var(--cream-deep);
-  }
-
-  .specimen-label {
-    font-family: 'Jost', sans-serif;
-    font-size: 11px;
-    font-weight: 400;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 48px;
-  }
-
-  .specimen-page {
-    max-width: 480px;
-    width: 100%;
-    background: var(--cream);
-    border: 0.5px solid var(--rule);
-    padding: 48px 32px;
-    text-align: center;
-    position: relative;
-    box-shadow: 0 1px 4px rgba(26, 26, 46, 0.04);
-  }
-
-  /* Subtle inner border like a book page */
-  .specimen-page::before {
-    content: '';
-    position: absolute;
-    top: 8px; left: 8px; right: 8px; bottom: 8px;
-    border: 0.5px solid var(--rule);
-    pointer-events: none;
-  }
-
-  .specimen-date {
-    font-family: 'Jost', sans-serif;
-    font-size: 11px;
-    font-weight: 400;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 12px;
-  }
-
-  .specimen-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 400;
-    color: var(--ink);
-    line-height: 1.3;
-    margin-bottom: 14px;
-  }
-
-  .specimen-purpose {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 16px;
-    font-weight: 300;
-    color: var(--warm-brown);
-    line-height: 1.5;
-    margin-bottom: 24px;
-    padding: 0 16px;
-  }
-
-  .specimen-detail {
-    font-family: 'Jost', sans-serif;
-    font-size: 11px;
-    font-weight: 300;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--warm-gray);
-    margin-bottom: 28px;
-  }
-
-  .specimen-menu-label {
-    font-family: 'Jost', sans-serif;
-    font-size: 10px;
-    font-weight: 400;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--warm-gray);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-  }
-
-  .specimen-menu-label::before,
-  .specimen-menu-label::after {
-    content: '';
-    width: 40px;
-    height: 0.5px;
-    background: var(--rule);
-  }
-
-  .specimen-menu {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 16px;
-    font-weight: 300;
-    color: var(--ink);
-    line-height: 1.8;
-    margin-bottom: 24px;
-  }
-
-  .specimen-outfit {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 14px;
-    font-weight: 300;
-    color: var(--warm-gray);
-    line-height: 1.6;
-    margin-bottom: 28px;
-  }
-
-  .specimen-guests {
-    font-family: 'Jost', sans-serif;
-    font-size: 9px;
-    font-weight: 300;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--warm-gray);
-    line-height: 1.8;
-    opacity: 0.7;
-  }
-
-  .specimen-reflection {
-    margin-top: 28px;
-    padding-top: 24px;
-    border-top: 0.5px solid var(--rule);
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 15px;
-    font-weight: 300;
-    color: var(--warm-brown);
-    line-height: 1.7;
-  }
-
-  /* ── SECTION: PRINCIPLES ── */
-
-  .principles {
-    width: 100%;
-    padding: 120px 32px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .principles-heading {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(28px, 5vw, 40px);
-    font-weight: 300;
-    color: var(--ink);
-    margin-bottom: 16px;
-  }
-
-  .principles-sub {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 18px;
-    font-weight: 300;
-    color: var(--warm-brown);
-    margin-bottom: 72px;
-    max-width: 400px;
-  }
-
-  .principles-grid {
-    max-width: 640px;
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 48px 40px;
-  }
-
-  .principle {
-    text-align: center;
-  }
-
-  .principle-name {
-    font-family: 'Jost', sans-serif;
-    font-size: 11px;
-    font-weight: 400;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 12px;
-  }
-
-  .principle-desc {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 16px;
-    font-weight: 300;
-    line-height: 1.6;
-    color: var(--warm-brown);
-  }
-
-  /* ── SECTION: CLOSING ── */
-
-  .closing {
-    width: 100%;
-    padding: 80px 32px 160px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .closing-rule {
-    width: 60px;
-    height: 1px;
-    background: var(--gold);
-    margin-bottom: 64px;
-  }
-
-  .closing-text {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(22px, 4vw, 30px);
-    font-weight: 300;
-    line-height: 1.7;
-    color: var(--ink);
-    max-width: 520px;
-    margin-bottom: 24px;
-  }
-
-  .closing-italic {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 18px;
-    font-weight: 300;
-    color: var(--warm-brown);
-    margin-bottom: 64px;
-    max-width: 400px;
-    line-height: 1.6;
-  }
-
-  .invite-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 36px;
-    border: 1px solid var(--gold);
-    position: relative;
-    cursor: default;
-    transition: all 0.4s ease;
-  }
-
-  .invite-badge::before {
-    content: '';
-    position: absolute;
-    top: -3px; left: -3px; right: -3px; bottom: -3px;
-    border: 0.5px solid var(--gold-muted);
-  }
-
-  .invite-badge-text {
-    font-family: 'Jost', sans-serif;
-    font-size: 12px;
-    font-weight: 400;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--gold);
-  }
-
-  .invite-badge:hover {
-    background: rgba(184, 150, 62, 0.04);
-  }
-
-  /* ── FOOTER ── */
-
-  .footer {
-    width: 100%;
-    padding: 48px 32px;
-    text-align: center;
-    border-top: 0.5px solid var(--rule);
-  }
-
-  .footer-text {
-    font-family: 'Jost', sans-serif;
-    font-size: 11px;
-    font-weight: 300;
-    letter-spacing: 0.1em;
-    color: var(--warm-gray);
-  }
-
-  /* ── ANIMATIONS ── */
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes gentle-bob {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(4px); }
-  }
-
-  /* ── RESPONSIVE ── */
-
-  @media (max-width: 600px) {
-    .hero { padding: 48px 24px; }
-    .philosophy { padding: 80px 24px; }
-    .idea { padding: 60px 24px 80px; }
-    .specimen { padding: 60px 20px 80px; }
-    .specimen-page { padding: 40px 24px; }
-    .principles { padding: 80px 24px; }
-    .principles-grid {
-      grid-template-columns: 1fr;
-      gap: 40px;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Ledger — A Private Record of the Art of Entertaining</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink:        #26242c;
+      --ink-mid:    #3e3b44;
+      --ink-light:  #625e6a;
+      --gold:       #a3965c;
+      --gold-pale:  #b8a96e;
+      --cream:      #f8f4eb;
+      --cream-mid:  #efe9dc;
+      --rule-color: #c9bc98;
+      --muted:      #8c8880;
     }
-    .closing { padding: 60px 24px 120px; }
-  }
-</style>
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.125rem;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── FADE IN ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: none; }
+
+    /* ── SMALL CAPS LABEL ── */
+    .label {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      text-align: center;
+      display: block;
+    }
+
+    /* ── DIAMOND RULE ── */
+    .diamond-rule {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin: 2.5rem auto;
+      width: 160px;
+    }
+    .diamond-rule::before,
+    .diamond-rule::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--rule-color);
+    }
+    .diamond-rule .diamond {
+      width: 6px; height: 6px;
+      background: var(--gold);
+      transform: rotate(45deg);
+      margin: 0 10px;
+      flex-shrink: 0;
+    }
+
+    /* ── THIN RULE ── */
+    .thin-rule {
+      display: block;
+      width: 80px;
+      height: 1px;
+      background: var(--rule-color);
+      margin: 2rem auto;
+    }
+
+    /* ══════════════════════════════════════
+       HERO / MASTHEAD
+    ══════════════════════════════════════ */
+    .masthead {
+      text-align: center;
+      padding: clamp(4rem, 10vw, 7rem) 2rem clamp(3rem, 7vw, 5rem);
+    }
+
+    .monogram-box {
+      display: inline-block;
+      width: 58px; height: 58px;
+      border: 1px solid var(--gold);
+      line-height: 58px;
+      font-size: 1.4rem;
+      font-weight: 300;
+      color: var(--gold);
+      margin-bottom: 2.2rem;
+      letter-spacing: 0;
+    }
+
+    .masthead h1 {
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 300;
+      letter-spacing: 0.03em;
+      color: var(--ink);
+      line-height: 1.05;
+      margin-bottom: 1.6rem;
+    }
+
+    .masthead .sub {
+      font-style: italic;
+      font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+      color: var(--ink-light);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ══════════════════════════════════════
+       PHILOSOPHY SECTION
+    ══════════════════════════════════════ */
+    .philosophy {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 0 2rem 3rem;
+      text-align: center;
+    }
+
+    .philosophy p {
+      font-size: clamp(1.05rem, 2vw, 1.2rem);
+      color: var(--ink-mid);
+      margin-bottom: 1.3rem;
+      line-height: 1.75;
+    }
+
+    /* ══════════════════════════════════════
+       FEATURE SECTIONS  (label / big h2 / body)
+    ══════════════════════════════════════ */
+    .feature-section {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3.5rem 2rem;
+      text-align: center;
+    }
+
+    .feature-section h2 {
+      font-size: clamp(2rem, 4.5vw, 3rem);
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      color: var(--ink);
+      margin: 0.6rem 0 1.2rem;
+      line-height: 1.15;
+    }
+
+    .feature-section p {
+      font-size: clamp(1rem, 2vw, 1.15rem);
+      color: var(--ink-mid);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.75;
+    }
+
+    /* ══════════════════════════════════════
+       SPECIMEN CARDS  (gathering)
+    ══════════════════════════════════════ */
+    .specimen-wrap {
+      padding: 0 1.5rem 4rem;
+    }
+
+    .specimen-card {
+      max-width: 580px;
+      margin: 0 auto;
+      background: #fdfcf7;
+      border: 1px solid #ddd6c4;
+      padding: clamp(2rem, 5vw, 3rem) clamp(1.5rem, 5vw, 3rem);
+      position: relative;
+      box-shadow: 0 2px 28px rgba(30,28,46,0.07);
+      text-align: center;
+    }
+
+    .specimen-card::before {
+      content: '';
+      position: absolute;
+      inset: 7px;
+      border: 1px solid rgba(184,151,90,0.2);
+      pointer-events: none;
+    }
+
+    .specimen-card .s-date,
+    .ledger-page .s-date {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.22em;
+      color: var(--gold);
+      margin-bottom: 0.6rem;
+    }
+
+    .specimen-card h3,
+    .ledger-page h3 {
+      font-size: clamp(1.7rem, 4vw, 2.4rem);
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      color: var(--ink);
+    }
+
+    .specimen-card .s-purpose,
+    .ledger-page .s-purpose {
+      font-style: italic;
+      color: var(--ink-light);
+      font-size: 1.05rem;
+      margin-bottom: 1.4rem;
+      line-height: 1.5;
+    }
+
+    .specimen-card .s-meta,
+    .ledger-page .s-meta {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      margin-bottom: 1.6rem;
+    }
+
+    .s-rule {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      margin: 1.2rem 0;
+      color: var(--rule-color);
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+    }
+
+    .s-rule::before, .s-rule::after {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 1px;
+      background: var(--rule-color);
+    }
+
+    .specimen-card .s-menu,
+    .ledger-page .s-menu {
+      margin: 0.5rem 0 1.4rem;
+    }
+
+    .specimen-card .s-menu p,
+    .ledger-page .s-menu p {
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--ink-mid);
+      line-height: 1.9;
+    }
+
+    .specimen-card .s-wore,
+    .ledger-page .s-wore {
+      font-style: italic;
+      font-size: 0.93rem;
+      color: var(--ink-light);
+      margin-bottom: 1.4rem;
+      padding-top: 0.6rem;
+      border-top: 1px solid var(--cream-mid);
+    }
+
+    .specimen-card .s-guests,
+    .ledger-page .s-guests {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .specimen-card .s-reflection,
+    .ledger-page .s-reflection {
+      margin-top: 1.4rem;
+      padding-top: 1.4rem;
+      border-top: 1px solid var(--cream-mid);
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--ink-mid);
+      line-height: 1.7;
+    }
+
+    /* ══════════════════════════════════════
+       SPECIMENS ROW  (two-up on desktop)
+    ══════════════════════════════════════ */
+    .specimens-two-up {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+    }
+
+    @media (max-width: 760px) {
+      .specimens-two-up { grid-template-columns: 1fr; }
+    }
+
+    /* ══════════════════════════════════════
+       WEEKLY MENU SPECIMEN
+    ══════════════════════════════════════ */
+    .menu-specimen {
+      max-width: 580px;
+      margin: 0 auto;
+      box-shadow: 0 3px 32px rgba(38,36,44,0.07);
+      border: 1px solid #e0d9ca;
+      overflow: hidden;
+    }
+
+    .menu-header {
+      background: #fdfcf7;
+      color: var(--ink);
+      text-align: center;
+      padding: 1.8rem 2rem 1rem;
+      border-bottom: 1px solid #ddd6c4;
+    }
+
+    .menu-header .mh-household {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      color: var(--gold);
+      margin-bottom: 0.4rem;
+    }
+
+    .menu-header h4 {
+      font-size: 1.35rem;
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      color: var(--ink);
+      font-style: italic;
+    }
+
+    .menu-days {
+      padding: 1.8rem 2.2rem 0.6rem;
+      background: #fdfcf7;
+    }
+
+    .menu-row {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 0.5rem;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid var(--cream-mid);
+      font-size: 0.93rem;
+      align-items: baseline;
+    }
+
+    .menu-row:last-child { border-bottom: none; margin-bottom: 0.5rem; }
+
+    .menu-row .day {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.16em;
+      color: var(--gold);
+      padding-top: 0.15rem;
+    }
+
+    .menu-row .meals {
+      font-style: italic;
+      color: var(--ink-mid);
+      line-height: 1.55;
+      font-size: 0.97rem;
+    }
+
+    .menu-pantry {
+      background: #fdfcf7;
+      padding: 1.4rem 2rem;
+      border-top: 1px solid #e5dece;
+    }
+
+    .pantry-heading {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.22em;
+      color: var(--gold);
+      margin-bottom: 1.1rem;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .pantry-heading::before, .pantry-heading::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--rule-color);
+      opacity: 0.5;
+    }
+
+    .pantry-items {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.4rem 2rem;
+    }
+
+    .pantry-item {
+      font-size: 0.92rem;
+      font-style: italic;
+      color: var(--ink-mid);
+      line-height: 1.5;
+    }
+
+    .pantry-item strong {
+      display: block;
+      font-style: normal;
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.56rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 0.1rem;
+    }
+
+    .menu-readyboard {
+      padding: 1.1rem 2.2rem;
+      text-align: center;
+      border-top: 1px solid #e5dece;
+      background: #fdfcf7;
+      font-size: 0.88rem;
+      font-style: italic;
+      color: var(--muted);
+    }
+
+    /* menu reflection */
+    .menu-reflection {
+      padding: 2rem 2.6rem;
+      background: #fdfcf7;
+      border-top: 1px solid #e5dece;
+      text-align: center;
+    }
+
+    .menu-reflection .refl-label {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      color: var(--gold);
+      margin-bottom: 0.7rem;
+      display: block;
+    }
+
+    .menu-reflection blockquote {
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--ink-mid);
+      line-height: 1.75;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+
+    /* ══════════════════════════════════════
+       SEARCH SPECIMEN
+    ══════════════════════════════════════ */
+    .search-specimen {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      border-bottom: 1px solid var(--rule-color);
+      padding-bottom: 0.7rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .search-bar .icon { color: var(--gold); font-size: 0.9rem; }
+
+    .search-bar .query {
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--ink-mid);
+    }
+
+    .search-result {
+      padding: 0.9rem 0;
+      border-bottom: 1px solid var(--cream-mid);
+      text-align: left;
+    }
+
+    .search-result:last-child { border-bottom: none; }
+
+    .search-result .sr-label {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.16em;
+      color: var(--gold);
+      margin-bottom: 0.25rem;
+    }
+
+    .search-result .sr-title {
+      font-size: 1.1rem;
+      color: var(--ink);
+      margin-bottom: 0.2rem;
+    }
+
+    .search-result .sr-detail {
+      font-size: 0.88rem;
+      font-style: italic;
+      color: var(--ink-light);
+      line-height: 1.55;
+    }
+
+    .search-result mark {
+      background: rgba(184,151,90,0.15);
+      color: var(--ink);
+      font-style: normal;
+      padding: 0 2px;
+    }
+
+    /* ══════════════════════════════════════
+       GIFT SPECIMEN
+    ══════════════════════════════════════ */
+    .gift-specimen {
+      max-width: 500px;
+      margin: 0 auto;
+      border: 1px solid #e0d9ca;
+      background: #fdfcf7;
+      box-shadow: 0 3px 32px rgba(38,36,44,0.07);
+      padding: 2.2rem 2.6rem;
+      position: relative;
+    }
+
+    .gift-specimen::before {
+      content: '';
+      position: absolute;
+      inset: 7px;
+      border: 1px solid rgba(184,151,90,0.15);
+      pointer-events: none;
+    }
+
+    .gift-specimen .gs-label {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      margin-bottom: 0.9rem;
+      display: block;
+    }
+
+    .gift-specimen .gs-host {
+      font-size: 1.4rem;
+      font-weight: 400;
+      margin-bottom: 0.2rem;
+      color: var(--ink);
+    }
+
+    .gift-specimen .gs-context {
+      font-style: italic;
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 1.4rem;
+    }
+
+    .gift-specimen .gs-suggest-label {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.57rem;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+
+    .gift-specimen ul {
+      list-style: none;
+      margin-bottom: 1.3rem;
+    }
+
+    .gift-specimen ul li {
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--ink-mid);
+      padding: 0.35rem 0;
+      border-bottom: 1px solid var(--cream-mid);
+    }
+
+    .gift-specimen ul li::before {
+      content: '—';
+      color: var(--gold);
+      margin-right: 0.5rem;
+    }
+
+    .gift-specimen .gs-history {
+      font-size: 0.83rem;
+      color: var(--muted);
+      font-style: italic;
+      border-top: 1px solid var(--cream-mid);
+      padding-top: 0.9rem;
+    }
+
+    .gift-specimen .gs-history span {
+      font-family: 'Cormorant SC', serif;
+      font-style: normal;
+      font-size: 0.57rem;
+      letter-spacing: 0.13em;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 0.35rem;
+    }
+
+    /* ══════════════════════════════════════
+       TRACKS
+    ══════════════════════════════════════ */
+    .tracks-section {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 0 2rem 5rem;
+      text-align: center;
+    }
+
+    .tracks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 1.4rem;
+      margin-top: 2rem;
+    }
+
+    .track-item {
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      font-style: italic;
+    }
+
+    .track-item::before {
+      content: '◈';
+      display: block;
+      color: var(--gold);
+      font-style: normal;
+      font-size: 0.7rem;
+      margin-bottom: 0.3rem;
+    }
+
+    /* ══════════════════════════════════════
+       CLOSING
+    ══════════════════════════════════════ */
+    .closing {
+      text-align: center;
+      padding: 3rem 2rem 6rem;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .closing p {
+      font-style: italic;
+      font-size: 1.08rem;
+      color: var(--ink-mid);
+      margin-bottom: 1.8rem;
+      line-height: 1.75;
+    }
+
+    .invite-badge {
+      display: inline-block;
+      border: 1px solid var(--gold);
+      padding: 0.65rem 2.2rem;
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.22em;
+      color: var(--gold);
+    }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    footer {
+      border-top: 1px solid var(--cream-mid);
+      padding: 1.5rem 2rem;
+      text-align: center;
+    }
+
+    footer p {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+    }
+
+    /* ══════════════════════════════════════
+       LEDGER BOOK (page-turn widget)
+    ══════════════════════════════════════ */
+    .ledger-wrap {
+      padding: 0 1.5rem 4rem;
+    }
+
+    .ledger-book {
+      max-width: 860px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      height: 660px;
+      box-shadow: 0 4px 40px rgba(38,36,44,0.10), 0 1px 6px rgba(38,36,44,0.05);
+      position: relative;
+    }
+
+    /* spine */
+    .ledger-book::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      left: 180px;
+      width: 1px;
+      background: #e0d9ca;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* LEFT PAGE */
+    .ledger-left {
+      background: #fdfcf7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.2rem;
+      height: 100%;
+      border-right: 1px solid #e0d9ca;
+      position: relative;
+    }
+
+    /* Gold inner frame on left panel */
+    .ledger-left::before {
+      content: '';
+      position: absolute;
+      inset: 12px;
+      border: 1px solid rgba(163,150,92,0.2);
+      pointer-events: none;
+    }
+
+    .ledger-left-inner { text-align: center; position: relative; z-index: 1; }
+
+    .ll-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      opacity: 1;
+      margin-bottom: 0.6rem;
+      line-height: 1;
+      transition: opacity 0.25s;
+    }
+
+    .ll-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--ink-light);
+      line-height: 1.5;
+      font-style: italic;
+      margin-bottom: 2.5rem;
+      transition: opacity 0.25s;
+      padding: 0 0.5rem;
+    }
+
+    .ledger-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.9rem;
+    }
+
+    .ledger-btn {
+      background: none;
+      border: none;
+      color: var(--gold);
+      width: 30px; height: 30px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 1.1rem;
+      transition: color 0.2s, opacity 0.2s;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .ledger-btn:hover:not(:disabled) { color: var(--ink); }
+    .ledger-btn:disabled { opacity: 0.2; cursor: default; }
+
+    .ledger-pips { display: flex; gap: 5px; align-items: center; }
+
+    .pip {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--rule-color);
+      transition: background 0.3s;
+    }
+    .pip.active { background: var(--gold); }
+
+    /* RIGHT PAGE — fixed height, no scroll */
+    .ledger-right {
+      background: #fdfcf7;
+      border: 1px solid #e0d9ca;
+      border-left: none;
+      position: relative;
+      overflow: hidden;
+      height: 100%;
+    }
+
+    .ledger-right::after { display: none; }
+
+    /* PAGE — absolutely fills the right panel, no overflow */
+    .ledger-page {
+      position: absolute;
+      inset: 0;
+      padding: 2.4rem 3.2rem 2rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      opacity: 0;
+      pointer-events: none;
+      transform-origin: left center;
+      backface-visibility: hidden;
+    }
+
+    .ledger-page.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Gold inner border */
+    .ledger-page::before {
+      content: '';
+      position: absolute;
+      inset: 14px;
+      border: 1px solid rgba(163,150,92,0.18);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .ledger-page > * { position: relative; z-index: 1; }
+
+    /* Type inside the ledger page */
+    .ledger-page .s-date       { font-family: 'Cormorant SC', serif; font-size: 0.62rem; letter-spacing: 0.22em; color: var(--gold); }
+    .ledger-page h3            { font-size: 1.8rem; font-weight: 400; line-height: 1.15; color: var(--ink); }
+    .ledger-page .s-purpose    { font-style: italic; color: var(--ink-light); font-size: 0.95rem; line-height: 1.45; }
+    .ledger-page .s-meta       { font-family: 'Cormorant SC', serif; font-size: 0.58rem; letter-spacing: 0.18em; color: var(--muted); }
+    .ledger-page .s-menu p     { font-style: italic; font-size: 0.97rem; color: var(--ink-mid); line-height: 1.8; }
+    .ledger-page .s-wore       { font-style: italic; font-size: 0.85rem; color: var(--ink-light); padding-top: 0.5rem; border-top: 1px solid var(--cream-mid); }
+    .ledger-page .s-guests     { font-family: 'Cormorant SC', serif; font-size: 0.58rem; letter-spacing: 0.14em; color: var(--muted); line-height: 1.8; }
+    .ledger-page .s-reflection { font-style: italic; font-size: 0.92rem; color: var(--ink-mid); line-height: 1.6; padding-top: 0.5rem; border-top: 1px solid var(--cream-mid); }
+
+    /* Flip animations */
+    .ledger-page.flip-in         { animation: pageFlipIn 0.4s cubic-bezier(0.4,0,0.2,1) forwards; }
+    .ledger-page.flip-out        { animation: pageFlipOut 0.4s cubic-bezier(0.4,0,0.2,1) forwards; }
+    .ledger-page.flip-in-reverse { animation: pageFlipInReverse 0.4s cubic-bezier(0.4,0,0.2,1) forwards; }
+    .ledger-page.flip-out-reverse{ animation: pageFlipOutReverse 0.4s cubic-bezier(0.4,0,0.2,1) forwards; }
+
+    @keyframes pageFlipOut        { from{opacity:1;transform:rotateY(0)}   to{opacity:0;transform:rotateY(-20deg)} }
+    @keyframes pageFlipIn         { from{opacity:0;transform:rotateY(12deg)} to{opacity:1;transform:rotateY(0)} }
+    @keyframes pageFlipOutReverse { from{opacity:1;transform:rotateY(0)}   to{opacity:0;transform:rotateY(12deg)} }
+    @keyframes pageFlipInReverse  { from{opacity:0;transform:rotateY(-20deg)} to{opacity:1;transform:rotateY(0)} }
+
+    @media (max-width: 640px) {
+      .ledger-book { grid-template-columns: 1fr; height: auto; }
+      .ledger-left { padding: 1.2rem 1rem; min-height: auto; }
+      .ll-label { display: none; }
+      .ledger-book::after { display: none; }
+      .ledger-right { height: 480px; border-left: 1px solid #d8cfc0; }
+    }
+
+  </style>
 </head>
 <body>
 
-<div class="page">
+  <!-- ══ MASTHEAD ══ -->
+  <header class="masthead fade-in visible">
+    <div class="monogram-box">L</div>
+    <h1>The Ledger</h1>
+    <p class="sub"><em>A private record of the art of entertaining.</em></p>
+    <div class="diamond-rule"><div class="diamond"></div></div>
+  </header>
 
-  <!-- ── HERO ── -->
-  <section class="hero">
-    <div class="monogram">L</div>
-    <h1 class="hero-title">The Ledger</h1>
-    <p class="hero-subtitle">
-      A private record of the art of entertaining — the menus, the guests, the atmosphere, the memories that make a house a home.
-    </p>
-    <div class="hero-rule"></div>
-    <span class="scroll-hint">Discover</span>
+  <!-- ══ PHILOSOPHY ══ -->
+  <section class="philosophy fade-in">
+    <p>At finishing school, we were taught that a gracious home has a memory. The menu your mother-in-law cannot eat. The wine your most important guest prefers. The evening someone wore the same dress as another guest — and why it never happened again.</p>
+    <p>That memory lived in a ledger. Handwritten, private, passed down. The record of a life well hosted.</p>
+    <p>The Ledger brings this practice into the present — with the intelligence to remember what you cannot, and the beauty worthy of what you are preserving.</p>
+    <div class="diamond-rule"><div class="diamond"></div></div>
   </section>
 
-  <!-- ── PHILOSOPHY ── -->
-  <section class="philosophy">
-    <div class="philosophy-ornament">◆ &ensp; ◆ &ensp; ◆</div>
-    <p class="philosophy-text">
-      For generations, the world's finest hostesses have kept private ledgers — handwritten books recording every dinner, every guest, every menu, every seating arrangement. The invisible system behind evenings that feel <em>effortless</em>.
-    </p>
-    <p class="philosophy-text" style="margin-top: 24px; font-style: italic; color: var(--warm-brown);">
-      Nobody has brought them into the digital age. Until now.
-    </p>
+  <!-- ══ FEATURE: THE RECORD ══ -->
+  <section class="feature-section fade-in">
+    <span class="label">The Record</span>
+    <h2>Every evening, documented beautifully</h2>
+    <p>The menu. The wines. The flowers on the table, the music in the background, the scent of beeswax candles. Every detail that made the evening yours — captured in a private book that belongs to your house.</p>
   </section>
 
-  <!-- ── THE IDEA ── -->
-  <section class="idea">
-    <div class="section-rule"></div>
-    <div class="idea-columns">
-      <div class="idea-item">
-        <div class="idea-label">The Record</div>
-        <h3 class="idea-heading">Every evening, documented beautifully</h3>
-        <p class="idea-body">
-          The menu. The wines. The flowers on the table, the music in the background, the scent of beeswax candles. Every detail that made the evening yours — captured in a private book that belongs to your house.
-        </p>
+  <!-- LEDGER PAGE-TURN WIDGET -->
+  <div class="ledger-wrap fade-in">
+
+    <!-- page-curl shadow layers -->
+    <div class="ledger-book" id="ledgerBook">
+
+      <!-- LEFT PAGE (label / nav) -->
+      <div class="ledger-left">
+        <div class="ledger-left-inner">
+          <div class="ll-num" id="llNum">I</div>
+          <div class="ll-label" id="llLabel">A Spring Evening<br>in Montreux</div>
+          <div class="ledger-nav">
+            <button class="ledger-btn" id="prevBtn" aria-label="Previous page" disabled>&#8592;</button>
+            <span class="ledger-pips" id="ledgerPips">
+              <span class="pip active"></span>
+              <span class="pip"></span>
+              <span class="pip"></span>
+            </span>
+            <button class="ledger-btn" id="nextBtn" aria-label="Next page">&#8594;</button>
+          </div>
+        </div>
       </div>
-      <div class="idea-item">
-        <div class="idea-label">The Guest Book</div>
-        <h3 class="idea-heading">A memory that never forgets</h3>
-        <p class="idea-body">
-          What you served the Martins last April. Who Sofia sat next to at Christmas. The conversation that lit up the table. Your guest book builds over time into something no notebook could hold.
-        </p>
+
+      <!-- RIGHT PAGE (content) — pages stack here, flip in/out -->
+      <div class="ledger-right">
+        <div class="ledger-page active" id="page0">
+          <div class="s-date">15 March 2025</div>
+          <h3>A Spring Evening<br>in Montreux</h3>
+          <p class="s-purpose">"To celebrate Sofia's return from Sardinia and the first warm evening of spring"</p>
+          <p class="s-meta">Dinner &ensp;·&ensp; Villa Pierrefeu, Lake Geneva Terrace</p>
+          <div class="s-rule">Menu</div>
+          <div class="s-menu"><p>
+            Asparagus velouté<br>
+            Dover sole meunière<br>
+            Rack of lamb with spring vegetables<br>
+            Comté, Vacherin Mont-d'Or, aged Gruyère<br>
+            Tarte Tatin with crème fraîche
+          </p></div>
+          <p class="s-wore">Wore: Navy silk midi dress with cream cashmere wrap — The Row</p>
+          <p class="s-guests">Comtesse Sofia de Montague &ensp;·&ensp; Isabelle Hartley-Ross<br>Alexandra Chen-Beaumont &ensp;·&ensp; James &amp; Catherine Aldridge</p>
+          <p class="s-reflection">"The light on the lake at sunset was extraordinary. Everyone lingered on the terrace longer than planned — and it was perfect."</p>
+        </div>
+
+        <div class="ledger-page" id="page1">
+          <div class="s-date">14 February 2026</div>
+          <h3>A Winter Evening<br>at the Cabin</h3>
+          <p class="s-purpose">"First proper gathering of the new year — firelit and unhurried"</p>
+          <p class="s-meta">Dinner &ensp;·&ensp; White Salmon, Washington</p>
+          <div class="s-rule">Menu</div>
+          <div class="s-menu"><p>
+            Cured salmon, crème fraîche, rye crackers<br>
+            Lamb shoulder, preserved lemon &amp; olives<br>
+            Celery root gratin · escarole salad<br>
+            Aged chèvre, fig jam, toasted walnuts<br>
+            <em style="font-size:0.9rem;color:var(--muted)">2019 Côtes du Rhône · still cider from the Gorge</em>
+          </p></div>
+          <p class="s-wore">Wore: Aubergine velvet, the antique garnet earrings — nothing that outshone the candles</p>
+          <p class="s-guests">Margaux &amp; Thomas &ensp;·&ensp; Claudine<br>the de Marchais &ensp;·&ensp; Will</p>
+          <p class="s-reflection">"The lamb braised beautifully — this is the dish now. The cider was a revelation alongside it."</p>
+        </div>
+
+        <div class="ledger-page" id="page2">
+          <div class="s-date">3 November 2025</div>
+          <h3>An Autumn Dinner<br>in Tokyo</h3>
+          <p class="s-purpose">"For the Yamamotos, on their first visit to our home abroad"</p>
+          <p class="s-meta">Dinner &ensp;·&ensp; Hiroo Residence</p>
+          <div class="s-rule">Menu</div>
+          <div class="s-menu"><p>
+            Leek velouté <em style="font-size:0.85rem;color:var(--muted)">(Wei: no shellfish)</em><br>
+            Roast duck with quince and bitter greens<br>
+            Époisses · aged comté<br>
+            Pear tarte tatin<br>
+            <em style="font-size:0.9rem;color:var(--muted)">2017 Meursault · sake, closing</em>
+          </p></div>
+          <p class="s-wore">Wore: Ivory crepe blouse, wide charcoal trousers — understated, as the occasion required</p>
+          <p class="s-guests">Wei &amp; Isabella Cheng &ensp;·&ensp; Mr &amp; Mrs Yamamoto<br>Hiroshi Tanaka</p>
+          <p class="s-reflection">"Always substitute the bisque for Wei quietly. He noticed last time it wasn't the same — and was grateful."</p>
+        </div>
       </div>
-      <div class="idea-item">
-        <div class="idea-label">The Reflection</div>
-        <h3 class="idea-heading">The art of getting better</h3>
-        <p class="idea-body">
-          What felt effortless. What you'd change. Which guest combinations sparked. The lamb that rested too long. The terrace at sunset that was too beautiful to rush. Every evening teaches the next.
-        </p>
+
+    </div><!-- /.ledger-book -->
+  </div><!-- /.ledger-wrap -->
+
+  <div class="diamond-rule" style="max-width:160px;margin:0 auto 0;"><div class="diamond"></div></div>
+
+  <!-- ══ FEATURE: GUEST BOOK ══ -->
+  <section class="feature-section fade-in">
+    <span class="label">The Guest Book</span>
+    <h2>A memory that never forgets</h2>
+    <p>What you served the Martins last April. Who Sofia sat next to at Christmas. The conversation that lit up the table. Your guest book builds over time into something no notebook could hold.</p>
+  </section>
+
+  <!-- ══ FEATURE: SEARCH ══ -->
+  <section class="feature-section fade-in" style="padding-bottom:1.5rem">
+    <span class="label">Search Your Ledger</span>
+    <h2>Ask it anything</h2>
+    <p>How many times has your father-in-law visited? What did you serve him last? When did you last wear the blue silk? The ledger holds every answer, and gives it back in plain language.</p>
+  </section>
+
+  <div class="specimen-wrap fade-in" style="padding-bottom:4rem">
+    <div class="search-specimen">
+      <div class="search-bar">
+        <span class="icon">⌕</span>
+        <span class="query">has my mother-in-law ever had the lamb</span>
+      </div>
+
+      <div class="search-result">
+        <div class="sr-label">Gathering · 22 December 2024 · White Salmon</div>
+        <div class="sr-title">Christmas Eve Dinner</div>
+        <div class="sr-detail"><mark>Lamb shoulder</mark>, preserved lemon and olives · She asked for the recipe. Serve again.</div>
+      </div>
+
+      <div class="search-result">
+        <div class="sr-label">Gathering · 3 April 2023 · Lake Geneva</div>
+        <div class="sr-title">A Spring Luncheon on the Terrace</div>
+        <div class="sr-detail"><mark>Rack of lamb</mark> with spring vegetables · Note: she left most of it. Too pink, perhaps.</div>
+      </div>
+
+      <div class="search-result">
+        <div class="sr-label">Guest Note · Margaret Aldridge</div>
+        <div class="sr-title">5 visits · next: Easter weekend</div>
+        <div class="sr-detail">Prefers things well-cooked · no fish · always accepts a second glass of Burgundy · last gift: Diptyque candles, received warmly</div>
       </div>
     </div>
+  </div>
+
+  <div class="diamond-rule" style="max-width:160px;margin:0 auto 0;"><div class="diamond"></div></div>
+
+  <!-- ══ FEATURE: WEEKLY MENU ══ -->
+  <section class="feature-section fade-in">
+    <span class="label">The Weekly House Menu</span>
+    <h2>The rhythm of a living house</h2>
+    <p>At finishing school, every house published a weekly menu. It told residents and guests what to expect — and signalled that the kitchen was alive and intentional. The Ledger brings this practice home: every meal planned, every ferment in progress, the pantry ready for an unexpected guest. Exportable as a card for the kitchen wall, or a working brief for your staff.</p>
   </section>
 
-  <!-- ── SPECIMEN ── -->
-  <section class="specimen">
-    <div class="specimen-label">A Page from The Ledger</div>
-    <div class="specimen-page">
-      <div class="specimen-date">15 March 2025</div>
-      <div class="specimen-title">A Spring Evening<br>in Montreux</div>
-      <div class="specimen-purpose">"To celebrate Sofia's return from Sardinia and the first warm evening of spring"</div>
-      <div class="specimen-detail">Dinner &ensp;·&ensp; Villa Pierrefeu, Lake Geneva Terrace</div>
-      <div class="specimen-menu-label"><span>Menu</span></div>
-      <div class="specimen-menu">
-        Asparagus velouté<br>
-        Dover sole meunière<br>
-        Rack of lamb with spring vegetables<br>
-        Comté, Vacherin Mont-d'Or, aged Gruyère<br>
-        Tarte Tatin with crème fraîche
+  <div class="specimen-wrap fade-in" style="padding-bottom: 2rem">
+    <div class="menu-specimen">
+      <div class="menu-header">
+        <div class="mh-household">The White Salmon Household</div>
+        <h4>Week of 17–23 February</h4>
       </div>
-      <div class="specimen-outfit">
-        Wore: Navy silk midi dress with cream cashmere wrap — The Row
+
+      <div class="menu-days">
+        <div class="menu-row">
+          <div class="day">Monday</div>
+          <div class="meals">Oat porridge with pears · Lentil soup, sourdough · Chicken thighs, preserved lemon</div>
+        </div>
+        <div class="menu-row">
+          <div class="day">Tuesday</div>
+          <div class="meals">Yogurt, honey · Leftovers · Lamb chili, cornbread with goat buttermilk</div>
+        </div>
+        <div class="menu-row">
+          <div class="day">Wednesday</div>
+          <div class="meals">Sourdough toast, soft egg · Galette, green salad · Pasta, smoked trout and capers</div>
+        </div>
+        <div class="menu-row">
+          <div class="day">Thursday</div>
+          <div class="meals">Granola · Bean and greens soup · Roasted root vegetables, goat cheese</div>
+        </div>
+        <div class="menu-row">
+          <div class="day">Friday</div>
+          <div class="meals">Buckwheat crêpes · Leftover galette · Merguez braised with white beans</div>
+        </div>
       </div>
-      <div class="specimen-guests">
-        Comtesse Sofia de Montague &ensp;·&ensp; Isabelle Hartley-Ross<br>
-        Alexandra Chen-Beaumont &ensp;·&ensp; James & Catherine Aldridge
+
+      <div class="menu-pantry">
+        <div class="pantry-heading">From the Kitchen This Week</div>
+        <div class="pantry-items">
+          <div class="pantry-item"><strong>The Bake</strong>sourdough country loaf</div>
+          <div class="pantry-item"><strong>The Ferment</strong>kimchi · second kombucha</div>
+          <div class="pantry-item"><strong>The Cheese</strong>aged chèvre, almost ready</div>
+          <div class="pantry-item"><strong>The Preserve</strong>fig jam · pickled peppers</div>
+          <div class="pantry-item"><strong>The Stock</strong>chicken, on the stove</div>
+          <div class="pantry-item"><strong>The Fresh</strong>kale and leeks, still in the ground</div>
+        </div>
       </div>
-      <div class="specimen-reflection">
-        "The light on the lake at sunset was extraordinary. Everyone lingered on the terrace longer than planned — and it was perfect."
+
+      <div class="menu-readyboard">
+        Should someone call — cheeseboard ready &ensp;·&ensp; smoked trout dip · rye crackers · toasted walnuts
+      </div>
+
+      <div class="menu-reflection">
+        <span class="refl-label">End of Week · Reflection</span>
+        <blockquote>"The lamb chili was the best thing on the table all week — the goat buttermilk cornbread is now a permanent thing. The merguez needed braising, not roasting: noted. The kombucha hit its second ferment perfectly on Thursday."</blockquote>
       </div>
     </div>
+  </div>
+
+  <p class="fade-in" style="text-align:center;font-style:italic;font-size:0.88rem;color:var(--muted);padding-bottom:4rem">Export as a printed card for the kitchen wall &ensp;·&ensp; Share with staff as a working brief &ensp;·&ensp; Archive every week</p>
+
+  <div class="diamond-rule" style="max-width:160px;margin:0 auto 0;"><div class="diamond"></div></div>
+
+  <!-- ══ FEATURE: GIFT GIVING ══ -->
+  <section class="feature-section fade-in">
+    <span class="label">The Art of the Gift</span>
+    <h2>Considered, never repeated,<br>always right for the house</h2>
+    <p>Cultural protocols, seasonal appropriateness, the quiet record of everything you have given and received — so that the gift always reflects the giver. Not the receiver's wish list. Not the price tag. The relationship.</p>
   </section>
 
-  <!-- ── PRINCIPLES ── -->
-  <section class="principles">
-    <h2 class="principles-heading">What The Ledger Holds</h2>
-    <p class="principles-sub">Everything a thoughtful hostess remembers — and everything she wishes she could.</p>
-    <div class="principles-grid">
-      <div class="principle">
-        <div class="principle-name">Menus & Wines</div>
-        <p class="principle-desc">Every course, every pairing, every triumph and every lesson.</p>
-      </div>
-      <div class="principle">
-        <div class="principle-name">Guest Profiles</div>
-        <p class="principle-desc">Dietary needs, preferences, conversation topics, gifting history — the details that make guests feel known.</p>
-      </div>
-      <div class="principle">
-        <div class="principle-name">The Atmosphere</div>
-        <p class="principle-desc">Flowers, table settings, lighting, music, scent — the composition of a room.</p>
-      </div>
-      <div class="principle">
-        <div class="principle-name">Reflections</div>
-        <p class="principle-desc">Honest notes on what worked, what to change, which moments were magic.</p>
-      </div>
-      <div class="principle">
-        <div class="principle-name">The Timeline</div>
-        <p class="principle-desc">The choreography of the evening — from aperitifs to the last digestif.</p>
-      </div>
-      <div class="principle">
-        <div class="principle-name">What You Wore</div>
-        <p class="principle-desc">Because the hostess is part of her own evening — and the record of it.</p>
+  <div class="specimen-wrap fade-in">
+    <div class="gift-specimen">
+      <span class="gs-label">Attending · Dinner at the Yamamoto Residence · Tokyo</span>
+      <div class="gs-host">Mr &amp; Mrs Yamamoto</div>
+      <div class="gs-context">First formal invitation · their home · host collects lacquerware</div>
+
+      <span class="gs-suggest-label">Suggested directions</span>
+      <ul>
+        <li>A quality confection from a known French house — not chocolate</li>
+        <li>Washi paper goods, beautifully wrapped, in odd numbers</li>
+        <li>Aged sake from a small producer, if you know their preference</li>
+        <li>Nothing white-wrapped, no sets of four</li>
+      </ul>
+
+      <div class="gs-history">
+        <span>Previous gifts to this household</span>
+        2023 · Valrhona assortment · warmly received<br>
+        2022 · First visit — nothing brought; sent flowers the following morning
       </div>
     </div>
+  </div>
+
+  <div class="diamond-rule" style="max-width:160px;margin:3rem auto 0;"><div class="diamond"></div></div>
+
+  <!-- ══ FEATURE: REFLECTION ══ -->
+  <section class="feature-section fade-in">
+    <span class="label">The Reflection</span>
+    <h2>The art of getting better</h2>
+    <p>What felt effortless. What you'd change. Which guest combinations sparked. The lamb that rested too long. The terrace at sunset that was too beautiful to rush. Every evening teaches the next.</p>
   </section>
 
-  <!-- ── CLOSING ── -->
-  <section class="closing">
-    <div class="closing-rule"></div>
-    <p class="closing-text">
-      The most elegant evenings<br>are not improvised.<br>
-      They are rehearsed so thoroughly<br>
-      that improvisation becomes possible.
-    </p>
-    <p class="closing-italic">
-      The Ledger is currently available by invitation only.
-    </p>
-    <div class="invite-badge">
-      <span class="invite-badge-text">By Invitation Only</span>
-    </div>
+  <!-- ══ CLOSING ══ -->
+  <section class="closing fade-in">
+    <div class="diamond-rule"><div class="diamond"></div></div>
+    <p>The women who kept these books understood something quietly important: that the care of a home, and the art of gathering people within it, is one of the most significant things a person can do.</p>
+    <p>The Ledger is currently available by invitation only.</p>
+    <div class="invite-badge">By Invitation Only</div>
+    <p style="margin-top:1.8rem;font-size:0.9rem;color:var(--muted)">To request an invitation, write to us at <span style="color:var(--gold);border-bottom:1px solid rgba(184,151,90,0.4)">lara [at] privateledger [dot] app</span></p>
   </section>
 
-  <!-- ── FOOTER ── -->
-  <footer class="footer">
-    <p class="footer-text">The Ledger &ensp;·&ensp; A private record of the art of entertaining</p>
+  <footer>
+    <p>The Ledger &ensp;·&ensp; A private record of the art of entertaining</p>
   </footer>
 
-</div>
+    <script>
+    // ── FADE IN ──
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
-<script>
-  // Intersection Observer for scroll-triggered fade-ins
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
+    document.querySelectorAll('.fade-in:not(.visible)').forEach((el, i) => {
+      el.style.transitionDelay = `${i * 0.05}s`;
+      io.observe(el);
     });
-  }, {
-    threshold: 0.2,
-    rootMargin: '0px 0px -60px 0px'
-  });
 
-  document.querySelectorAll('.idea-item').forEach((el, i) => {
-    el.style.transitionDelay = `${i * 0.15}s`;
-    observer.observe(el);
-  });
-</script>
+    // ── LEDGER PAGE TURN ──
+    const pages = Array.from(document.querySelectorAll('.ledger-page'));
+    const pips  = Array.from(document.querySelectorAll('.pip'));
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const llNum   = document.getElementById('llNum');
+    const llLabel = document.getElementById('llLabel');
+
+    const pageLabels = [
+      { num: 'I',   label: 'A Spring Evening<br>in Montreux' },
+      { num: 'II',  label: 'A Winter Evening<br>at the Cabin' },
+      { num: 'III', label: 'An Autumn Dinner<br>in Tokyo' },
+    ];
+
+    let current = 0;
+    let animating = false;
+
+    function goTo(next, direction) {
+      if (animating || next === current) return;
+      animating = true;
+
+      const outClass = direction > 0 ? 'flip-out' : 'flip-out-reverse';
+      const inClass  = direction > 0 ? 'flip-in'  : 'flip-in-reverse';
+
+      const outPage = pages[current];
+      const inPage  = pages[next];
+
+      outPage.classList.remove('active');
+      outPage.classList.add(outClass);
+
+      outPage.addEventListener('animationend', () => {
+        outPage.classList.remove(outClass);
+        inPage.classList.add('active', inClass);
+        inPage.addEventListener('animationend', () => {
+          inPage.classList.remove(inClass);
+          animating = false;
+        }, { once: true });
+      }, { once: true });
+
+      current = next;
+
+      pips.forEach((p, i) => p.classList.toggle('active', i === current));
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === pages.length - 1;
+
+      llNum.style.opacity = '0';
+      llLabel.style.opacity = '0';
+      setTimeout(() => {
+        llNum.innerHTML   = pageLabels[current].num;
+        llLabel.innerHTML = pageLabels[current].label;
+        llNum.style.opacity = '0.7';
+        llLabel.style.opacity = '1';
+      }, 220);
+    }
+
+    nextBtn.addEventListener('click', () => goTo(current + 1, 1));
+    prevBtn.addEventListener('click', () => goTo(current - 1, -1));
+
+    let touchStartX = 0;
+    document.getElementById('ledgerBook').addEventListener('touchstart', e => {
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+    document.getElementById('ledgerBook').addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 40) {
+        if (dx < 0 && current < pages.length - 1) goTo(current + 1, 1);
+        if (dx > 0 && current > 0) goTo(current - 1, -1);
+      }
+    }, { passive: true });
+  </script>
 
 </body>
 </html>
