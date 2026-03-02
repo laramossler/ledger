@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Chloe has something planned for you</title>
+
+  <!-- OpenGraph / WhatsApp / iMessage / Instagram DM -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Chloe has something planned for you">
+  <meta property="og:description" content="You're invited to something special">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&h=630&q=80">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chloe has something planned for you">
+  <meta name="twitter:description" content="You're invited to something special">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&h=630&q=80">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ══════════════════════════════════════
+       FOUNDATIONS
+    ══════════════════════════════════════ */
+    :root {
+      --cream:       #F8F4EB;
+      --cream-mid:   #EFE9DC;
+      --cream-dark:  #E5DDD0;
+      --ink:         #26242C;
+      --ink-mid:     #3E3B44;
+      --ink-light:   #625E6A;
+      --gold:        #A3965C;
+      --gold-pale:   #B8A96E;
+      --gold-glow:   rgba(184, 169, 110, 0.25);
+      --muted:       #8C8880;
+      --rule:        #C9BC98;
+      --white-soft:  #FDFCF7;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      overflow: hidden;
+      height: 100dvh;
+      width: 100vw;
+      position: relative;
+    }
+
+    /* ── Typography ── */
+    .serif { font-family: 'Cormorant Garamond', Georgia, serif; }
+    .sc    { font-family: 'Cormorant SC', serif; }
+
+    /* ── Progress Bar ── */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: var(--gold);
+      z-index: 1000;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 0%;
+    }
+
+    /* ══════════════════════════════════════
+       SCREEN SYSTEM
+    ══════════════════════════════════════ */
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.7s ease, transform 0.7s ease;
+      transform: translateY(16px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding: 0 1.5rem;
+    }
+
+    .screen.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: none;
+      z-index: 10;
+    }
+
+    .screen.exit {
+      opacity: 0;
+      transform: translateY(-16px);
+      z-index: 5;
+    }
+
+    /* ══════════════════════════════════════
+       SHARED ELEMENTS
+    ══════════════════════════════════════ */
+    .diamond-rule {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100px;
+      margin: 0 auto;
+    }
+    .diamond-rule::before,
+    .diamond-rule::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+    }
+    .diamond-rule .diamond {
+      width: 5px; height: 5px;
+      background: var(--gold);
+      transform: rotate(45deg);
+      margin: 0 10px;
+      flex-shrink: 0;
+    }
+
+    .btn-continue {
+      display: inline-block;
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      background: transparent;
+      padding: 0.85rem 2.8rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      -webkit-tap-highlight-color: transparent;
+      text-transform: uppercase;
+    }
+
+    .btn-continue:hover {
+      background: var(--gold);
+      color: var(--cream);
+    }
+
+    .btn-continue:active {
+      transform: scale(0.97);
+    }
+
+    .btn-continue:disabled {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    .screen-label {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.28em;
+      color: var(--gold);
+      text-align: center;
+      display: block;
+      margin-bottom: 1.2rem;
+    }
+
+    /* ══════════════════════════════════════
+       SCREEN 1 — THE ENVELOPE
+    ══════════════════════════════════════ */
+    .screen-envelope {
+      background: var(--cream);
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .envelope-content {
+      opacity: 0;
+      animation: envelopeFadeIn 1.2s ease 0.3s forwards;
+    }
+
+    @keyframes envelopeFadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .monogram {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 56px;
+      border: 1px solid var(--gold);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: var(--gold);
+      margin-bottom: 2.5rem;
+    }
+
+    .envelope-host {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      font-weight: 300;
+      color: var(--ink);
+      line-height: 1.25;
+      margin-bottom: 0.6rem;
+    }
+
+    .envelope-tease {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.1rem, 3vw, 1.35rem);
+      font-style: italic;
+      color: var(--ink-light);
+      margin-bottom: 3rem;
+      line-height: 1.5;
+    }
+
+    .envelope-open {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      background: transparent;
+      padding: 1rem 3.2rem;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .envelope-open:hover {
+      background: var(--gold);
+      color: var(--cream);
+    }
+
+    .envelope-open:active {
+      transform: scale(0.96);
+    }
+
+    /* ══════════════════════════════════════
+       SCREEN 2 — THE REVEAL
+    ══════════════════════════════════════ */
+    .screen-reveal {
+      text-align: center;
+      padding: 3rem 1.5rem;
+    }
+
+    .reveal-inner {
+      max-width: 420px;
+      width: 100%;
+    }
+
+    .reveal-note {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.15rem, 3vw, 1.35rem);
+      font-style: italic;
+      color: var(--ink-mid);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .reveal-note::before {
+      content: '\201C';
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      color: var(--gold);
+      position: absolute;
+      top: -1rem;
+      left: -0.3rem;
+      line-height: 1;
+      opacity: 0.5;
+    }
+
+    .reveal-occasion {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-weight: 300;
+      color: var(--ink);
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+    }
+
+    .reveal-timeframe {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      margin-bottom: 2rem;
+    }
+
+    .reveal-group {
+      display: flex;
+      justify-content: center;
+      gap: 1.8rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+
+    .reveal-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--ink-mid);
+      letter-spacing: 0.03em;
+    }
+
+    .reveal-name.is-you {
+      color: var(--gold);
+      position: relative;
+    }
+
+    .reveal-name.is-you::after {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 1px;
+      background: var(--gold);
+      margin-top: 2px;
+      opacity: 0.4;
+    }
+
+    .reveal-prompt {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-style: italic;
+      color: var(--ink-light);
+      margin-bottom: 2.2rem;
+    }
+
+    /* ══════════════════════════════════════
+       SCREEN 3 — VIBE CAPTURE
+    ══════════════════════════════════════ */
+    .screen-vibe {
+      text-align: center;
+      padding: 2.5rem 1.2rem;
+      justify-content: flex-start;
+      padding-top: max(2.5rem, env(safe-area-inset-top, 2.5rem));
+    }
+
+    .vibe-header {
+      max-width: 360px;
+      margin-bottom: 1.5rem;
+    }
+
+    .vibe-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 300;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+
+    .vibe-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.95rem;
+      font-style: italic;
+      color: var(--ink-light);
+    }
+
+    .vibe-hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 1.2rem;
+    }
+
+    .vibe-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+      max-width: 400px;
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+
+    .vibe-card {
+      position: relative;
+      aspect-ratio: 3 / 4;
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .vibe-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      transition: opacity 0.3s ease;
+    }
+
+    .vibe-card img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .vibe-card img.loaded { opacity: 1; }
+
+    .vibe-card .vibe-gradient {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .vibe-card .vibe-text-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 1.2rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 50%, transparent 100%);
+    }
+
+    .vibe-word {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: #fff;
+      letter-spacing: 0.08em;
+      text-shadow: 0 1px 8px rgba(0,0,0,0.3);
+    }
+
+    .vibe-card.selected {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 1px var(--gold), 0 4px 20px var(--gold-glow);
+      transform: scale(1.02);
+    }
+
+    .vibe-card.selected .vibe-text-overlay::after {
+      content: '';
+      position: absolute;
+      top: 0.6rem;
+      right: 0.6rem;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .vibe-card.selected .vibe-text-overlay::before {
+      content: '';
+      position: absolute;
+      top: 0.72rem;
+      right: 0.72rem;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      z-index: 3;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F8F4EB' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+      background-size: 12px;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    .vibe-card:active:not(.selected) {
+      transform: scale(0.97);
+    }
+
+    /* Archetype gradient fallbacks */
+    .vibe-card[data-vibe="restore"] .vibe-gradient  { background: linear-gradient(135deg, #8EC5D6 0%, #D4C5A9 100%); }
+    .vibe-card[data-vibe="explore"] .vibe-gradient   { background: linear-gradient(135deg, #D4A574 0%, #8B5E3C 100%); }
+    .vibe-card[data-vibe="indulge"] .vibe-gradient   { background: linear-gradient(135deg, #9B4D5E 0%, #D4A86A 100%); }
+    .vibe-card[data-vibe="escape"] .vibe-gradient    { background: linear-gradient(135deg, #4EC5C1 0%, #1A7B8A 100%); }
+    .vibe-card[data-vibe="adventure"] .vibe-gradient { background: linear-gradient(135deg, #7A9B5C 0%, #C4A44E 100%); }
+    .vibe-card[data-vibe="celebrate"] .vibe-gradient { background: linear-gradient(135deg, #6B3FA0 0%, #D4869A 100%); }
+
+    /* ══════════════════════════════════════
+       SCREEN 4 — THE WILDCARD
+    ══════════════════════════════════════ */
+    .screen-wildcard {
+      text-align: center;
+      padding: 3rem 1.5rem;
+    }
+
+    .wildcard-inner {
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .wildcard-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.4rem, 4vw, 1.8rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--ink);
+      margin-bottom: 0.6rem;
+      line-height: 1.3;
+    }
+
+    .wildcard-subtitle {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    .wildcard-input {
+      width: 100%;
+      padding: 1rem 0;
+      border: none;
+      border-bottom: 1px solid var(--rule);
+      background: transparent;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--ink-mid);
+      outline: none;
+      text-align: center;
+      transition: border-color 0.3s;
+    }
+
+    .wildcard-input::placeholder {
+      color: var(--cream-dark);
+    }
+
+    .wildcard-input:focus {
+      border-color: var(--gold);
+    }
+
+    .wildcard-count {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+      margin-bottom: 2rem;
+      text-align: right;
+    }
+
+    .wildcard-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn-skip {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      -webkit-tap-highlight-color: transparent;
+      transition: color 0.2s;
+    }
+
+    .btn-skip:hover { color: var(--ink-light); }
+
+    /* ══════════════════════════════════════
+       SCREEN 5 — DATES
+    ══════════════════════════════════════ */
+    .screen-dates {
+      text-align: center;
+      padding: 2.5rem 1.2rem;
+      justify-content: flex-start;
+      padding-top: max(2.5rem, env(safe-area-inset-top, 2.5rem));
+    }
+
+    .dates-inner {
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .dates-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.4rem, 4vw, 1.8rem);
+      font-weight: 300;
+      color: var(--ink);
+      margin-bottom: 0.4rem;
+    }
+
+    .dates-subtitle {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    .calendar-header {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.22em;
+      color: var(--gold);
+      margin-bottom: 1.2rem;
+    }
+
+    .week-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-bottom: 2rem;
+    }
+
+    .week-block {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 1.2rem;
+      border: 1px solid var(--cream-dark);
+      border-radius: 4px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: all 0.25s ease;
+      background: var(--white-soft);
+    }
+
+    .week-block:hover {
+      border-color: var(--rule);
+    }
+
+    .week-block.selected {
+      border-color: var(--gold);
+      background: rgba(163, 150, 92, 0.06);
+      box-shadow: 0 0 0 1px var(--gold);
+    }
+
+    .week-block:active {
+      transform: scale(0.98);
+    }
+
+    .week-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      color: var(--ink-mid);
+    }
+
+    .week-dates {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .week-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid var(--cream-dark);
+      transition: all 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .week-block.selected .week-check {
+      background: var(--gold);
+      border-color: var(--gold);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F8F4EB' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+      background-size: 10px;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    /* Trip length */
+    .length-section {
+      margin-bottom: 2rem;
+    }
+
+    .length-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--ink-light);
+      margin-bottom: 0.8rem;
+    }
+
+    .length-options {
+      display: flex;
+      gap: 0.6rem;
+      justify-content: center;
+    }
+
+    .length-option {
+      padding: 0.6rem 1.1rem;
+      border: 1px solid var(--cream-dark);
+      border-radius: 4px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      color: var(--ink-light);
+      cursor: pointer;
+      background: var(--white-soft);
+      -webkit-tap-highlight-color: transparent;
+      transition: all 0.25s ease;
+    }
+
+    .length-option:hover {
+      border-color: var(--rule);
+    }
+
+    .length-option.selected {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(163, 150, 92, 0.06);
+      box-shadow: 0 0 0 1px var(--gold);
+    }
+
+    .length-option:active {
+      transform: scale(0.96);
+    }
+
+    /* ══════════════════════════════════════
+       SCREEN 6 — THE CLOSE
+    ══════════════════════════════════════ */
+    .screen-close {
+      text-align: center;
+      padding: 3rem 1.5rem;
+    }
+
+    .close-inner {
+      max-width: 420px;
+      width: 100%;
+    }
+
+    .close-checkmark {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gold);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: checkPop 0.5s ease 0.3s forwards;
+    }
+
+    @keyframes checkPop {
+      0%   { opacity: 0; transform: scale(0.5); }
+      60%  { transform: scale(1.1); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .close-checkmark svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--gold);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .close-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      font-weight: 300;
+      color: var(--ink);
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+
+    .close-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--ink-light);
+      margin-bottom: 2.5rem;
+      line-height: 1.5;
+    }
+
+    .close-shimmer {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 0 auto 2rem;
+      animation: shimmer 2s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { opacity: 0.3; width: 60px; }
+      50%      { opacity: 1; width: 120px; }
+    }
+
+    .close-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn-calendar {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      -webkit-tap-highlight-color: transparent;
+      transition: color 0.2s;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: var(--cream-dark);
+    }
+
+    .btn-calendar:hover { color: var(--ink-light); }
+
+    /* ══════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════ */
+    @media (min-width: 768px) {
+      .vibe-grid {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 540px;
+      }
+
+      .week-grid {
+        max-width: 440px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+
+    /* ══════════════════════════════════════
+       SUBTLE TEXTURE
+    ══════════════════════════════════════ */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Progress Bar -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- ══ SCREEN 1 — THE ENVELOPE ══ -->
+  <section class="screen screen-envelope active" id="screen-1">
+    <div class="envelope-content">
+      <div class="monogram">C</div>
+      <h1 class="envelope-host" id="envelopeTitle">Chloe has something<br>planned for you</h1>
+      <p class="envelope-tease">You're invited to something special</p>
+      <button class="envelope-open" onclick="goToScreen(2)" aria-label="Open invitation">Open</button>
+    </div>
+  </section>
+
+  <!-- ══ SCREEN 2 — THE REVEAL ══ -->
+  <section class="screen screen-reveal" id="screen-2">
+    <div class="reveal-inner">
+      <div class="diamond-rule" style="margin-bottom: 2rem;"><div class="diamond"></div></div>
+
+      <p class="reveal-note" id="revealNote">
+        I'm planning something special for us — I just need a little help from you to make it perfect.
+      </p>
+
+      <h2 class="reveal-occasion">A trip together</h2>
+      <p class="reveal-timeframe">May 2026</p>
+
+      <div class="reveal-group" id="revealGroup">
+        <span class="reveal-name">Chloe</span>
+        <span class="reveal-name" id="guestName1">Sarah</span>
+        <span class="reveal-name" id="guestName2">Priya</span>
+        <span class="reveal-name" id="guestName3">Amara</span>
+      </div>
+
+      <p class="reveal-prompt">Help me shape this</p>
+
+      <button class="btn-continue" onclick="goToScreen(3)">Continue</button>
+    </div>
+  </section>
+
+  <!-- ══ SCREEN 3 — VIBE CAPTURE ══ -->
+  <section class="screen screen-vibe" id="screen-3">
+    <div class="vibe-header">
+      <span class="screen-label">The Dream</span>
+      <h2 class="vibe-title">What does your dream trip feel like?</h2>
+      <p class="vibe-subtitle">Tap the ones that call to you</p>
+    </div>
+
+    <p class="vibe-hint">Select up to 3</p>
+
+    <div class="vibe-grid" id="vibeGrid">
+      <div class="vibe-card" data-vibe="restore" onclick="toggleVibe(this)">
+        <div class="vibe-gradient"></div>
+        <img src="https://images.unsplash.com/photo-1540555700478-4be289fbec6d?auto=format&fit=crop&w=400&h=530&q=80" alt="Restore" loading="lazy">
+        <div class="vibe-text-overlay">
+          <span class="vibe-word">Restore</span>
+        </div>
+      </div>
+
+      <div class="vibe-card" data-vibe="explore" onclick="toggleVibe(this)">
+        <div class="vibe-gradient"></div>
+        <img src="https://images.unsplash.com/photo-1504512485720-7d83a16ee930?auto=format&fit=crop&w=400&h=530&q=80" alt="Explore" loading="lazy">
+        <div class="vibe-text-overlay">
+          <span class="vibe-word">Explore</span>
+        </div>
+      </div>
+
+      <div class="vibe-card" data-vibe="indulge" onclick="toggleVibe(this)">
+        <div class="vibe-gradient"></div>
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=400&h=530&q=80" alt="Indulge" loading="lazy">
+        <div class="vibe-text-overlay">
+          <span class="vibe-word">Indulge</span>
+        </div>
+      </div>
+
+      <div class="vibe-card" data-vibe="escape" onclick="toggleVibe(this)">
+        <div class="vibe-gradient"></div>
+        <img src="https://images.unsplash.com/photo-1573843981267-be1999ff37cd?auto=format&fit=crop&w=400&h=530&q=80" alt="Escape" loading="lazy">
+        <div class="vibe-text-overlay">
+          <span class="vibe-word">Escape</span>
+        </div>
+      </div>
+
+      <div class="vibe-card" data-vibe="adventure" onclick="toggleVibe(this)">
+        <div class="vibe-gradient"></div>
+        <img src="https://images.unsplash.com/photo-1516426122078-c23e76b4571f?auto=format&fit=crop&w=400&h=530&q=80" alt="Adventure" loading="lazy">
+        <div class="vibe-text-overlay">
+          <span class="vibe-word">Adventure</span>
+        </div>
+      </div>
+
+      <div class="vibe-card" data-vibe="celebrate" onclick="toggleVibe(this)">
+        <div class="vibe-gradient"></div>
+        <img src="https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?auto=format&fit=crop&w=400&h=530&q=80" alt="Celebrate" loading="lazy">
+        <div class="vibe-text-overlay">
+          <span class="vibe-word">Celebrate</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-continue" id="vibeNext" onclick="goToScreen(4)" disabled>Continue</button>
+  </section>
+
+  <!-- ══ SCREEN 4 — THE WILDCARD ══ -->
+  <section class="screen screen-wildcard" id="screen-4">
+    <div class="wildcard-inner">
+      <div class="diamond-rule" style="margin-bottom: 2rem;"><div class="diamond"></div></div>
+
+      <span class="screen-label">One Last Thing</span>
+      <h2 class="wildcard-title">Is there anything you've been dreaming about?</h2>
+      <p class="wildcard-subtitle">One thing that would make this trip unforgettable for you</p>
+
+      <input
+        type="text"
+        class="wildcard-input"
+        id="wildcardInput"
+        maxlength="150"
+        placeholder="I've always wanted to..."
+        oninput="updateWildcardCount()"
+      >
+      <p class="wildcard-count"><span id="wildcardCount">0</span> / 150</p>
+
+      <div class="wildcard-actions">
+        <button class="btn-continue" onclick="goToScreen(5)">Continue</button>
+        <button class="btn-skip" onclick="goToScreen(5)">Skip this</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SCREEN 5 — DATES ══ -->
+  <section class="screen screen-dates" id="screen-5">
+    <div class="dates-inner">
+      <span class="screen-label">Availability</span>
+      <h2 class="dates-title">When could you get away?</h2>
+      <p class="dates-subtitle">Select all the weeks that could work for you</p>
+
+      <p class="calendar-header">May 2026</p>
+
+      <div class="week-grid" id="weekGrid">
+        <div class="week-block" data-week="may-4" onclick="toggleWeek(this)">
+          <div>
+            <div class="week-label">First week</div>
+            <div class="week-dates">Mon 4 &ndash; Sun 10</div>
+          </div>
+          <div class="week-check"></div>
+        </div>
+
+        <div class="week-block" data-week="may-11" onclick="toggleWeek(this)">
+          <div>
+            <div class="week-label">Second week</div>
+            <div class="week-dates">Mon 11 &ndash; Sun 17</div>
+          </div>
+          <div class="week-check"></div>
+        </div>
+
+        <div class="week-block" data-week="may-18" onclick="toggleWeek(this)">
+          <div>
+            <div class="week-label">Third week</div>
+            <div class="week-dates">Mon 18 &ndash; Sun 24</div>
+          </div>
+          <div class="week-check"></div>
+        </div>
+
+        <div class="week-block" data-week="may-25" onclick="toggleWeek(this)">
+          <div>
+            <div class="week-label">Fourth week</div>
+            <div class="week-dates">Mon 25 &ndash; Sun 31</div>
+          </div>
+          <div class="week-check"></div>
+        </div>
+      </div>
+
+      <div class="length-section">
+        <p class="length-label">How many days feels right?</p>
+        <div class="length-options" id="lengthOptions">
+          <div class="length-option" data-length="3-4" onclick="selectLength(this)">3&ndash;4 days</div>
+          <div class="length-option" data-length="5-6" onclick="selectLength(this)">5&ndash;6 days</div>
+          <div class="length-option" data-length="7+" onclick="selectLength(this)">A full week</div>
+        </div>
+      </div>
+
+      <button class="btn-continue" id="datesNext" onclick="submitAndClose()" disabled>I'm done</button>
+    </div>
+  </section>
+
+  <!-- ══ SCREEN 6 — THE CLOSE ══ -->
+  <section class="screen screen-close" id="screen-6">
+    <div class="close-inner">
+      <div class="close-checkmark">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+
+      <h2 class="close-title">You're in.</h2>
+      <p class="close-subtitle">Chloe will take it from here.<br>Get ready for something special.</p>
+
+      <div class="close-shimmer"></div>
+
+      <div class="diamond-rule" style="margin-bottom: 2rem;"><div class="diamond"></div></div>
+
+      <div class="close-actions">
+        <button class="btn-calendar" onclick="saveToCalendar()">Save &ldquo;May trip&rdquo; to calendar</button>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    /* ══════════════════════════════════════
+       STATE
+    ══════════════════════════════════════ */
+    const state = {
+      guest: '',
+      vibes: [],
+      wildcard: '',
+      weeks: [],
+      tripLength: '',
+      completedAt: null
+    };
+
+    let currentScreen = 1;
+    const totalScreens = 6;
+
+    /* ══════════════════════════════════════
+       INITIALIZATION
+    ══════════════════════════════════════ */
+    (function init() {
+      // Get guest name from URL
+      const params = new URLSearchParams(window.location.search);
+      const guest = params.get('guest') || params.get('name') || '';
+      state.guest = guest;
+
+      // Personalize the experience
+      if (guest) {
+        const capitalized = guest.charAt(0).toUpperCase() + guest.slice(1).toLowerCase();
+
+        // Highlight the guest's name in the group
+        const names = document.querySelectorAll('.reveal-name');
+        names.forEach(el => {
+          if (el.textContent.toLowerCase() === guest.toLowerCase()) {
+            el.classList.add('is-you');
+          }
+        });
+      }
+
+      // Load images with fallback
+      document.querySelectorAll('.vibe-card img').forEach(img => {
+        img.onload = function() { this.classList.add('loaded'); };
+        img.onerror = function() { this.style.display = 'none'; };
+      });
+
+      // Set initial progress
+      updateProgress();
+    })();
+
+    /* ══════════════════════════════════════
+       SCREEN TRANSITIONS
+    ══════════════════════════════════════ */
+    function goToScreen(num) {
+      if (num === currentScreen) return;
+
+      const current = document.getElementById('screen-' + currentScreen);
+      const next = document.getElementById('screen-' + num);
+
+      if (!current || !next) return;
+
+      // Exit current screen
+      current.classList.remove('active');
+      current.classList.add('exit');
+
+      // Enter new screen
+      setTimeout(() => {
+        current.classList.remove('exit');
+        next.classList.add('active');
+
+        // Scroll to top of new screen if it's scrollable
+        next.scrollTop = 0;
+      }, 350);
+
+      currentScreen = num;
+      updateProgress();
+
+      // Haptic feedback
+      if (navigator.vibrate) navigator.vibrate(10);
+    }
+
+    function updateProgress() {
+      const pct = ((currentScreen - 1) / (totalScreens - 1)) * 100;
+      document.getElementById('progressBar').style.width = pct + '%';
+    }
+
+    /* ══════════════════════════════════════
+       VIBE SELECTION
+    ══════════════════════════════════════ */
+    function toggleVibe(card) {
+      const vibe = card.dataset.vibe;
+      const isSelected = card.classList.contains('selected');
+
+      if (isSelected) {
+        card.classList.remove('selected');
+        state.vibes = state.vibes.filter(v => v !== vibe);
+      } else {
+        if (state.vibes.length >= 3) return; // Max 3
+        card.classList.add('selected');
+        state.vibes.push(vibe);
+      }
+
+      // Enable/disable continue
+      document.getElementById('vibeNext').disabled = state.vibes.length === 0;
+
+      // Haptic feedback
+      if (navigator.vibrate) navigator.vibrate(15);
+    }
+
+    /* ══════════════════════════════════════
+       WILDCARD
+    ══════════════════════════════════════ */
+    function updateWildcardCount() {
+      const input = document.getElementById('wildcardInput');
+      document.getElementById('wildcardCount').textContent = input.value.length;
+      state.wildcard = input.value;
+    }
+
+    /* ══════════════════════════════════════
+       DATE SELECTION
+    ══════════════════════════════════════ */
+    function toggleWeek(block) {
+      const week = block.dataset.week;
+      const isSelected = block.classList.contains('selected');
+
+      if (isSelected) {
+        block.classList.remove('selected');
+        state.weeks = state.weeks.filter(w => w !== week);
+      } else {
+        block.classList.add('selected');
+        state.weeks.push(week);
+      }
+
+      updateDatesButton();
+
+      // Haptic feedback
+      if (navigator.vibrate) navigator.vibrate(15);
+    }
+
+    function selectLength(option) {
+      document.querySelectorAll('.length-option').forEach(el => el.classList.remove('selected'));
+      option.classList.add('selected');
+      state.tripLength = option.dataset.length;
+      updateDatesButton();
+
+      if (navigator.vibrate) navigator.vibrate(10);
+    }
+
+    function updateDatesButton() {
+      const hasWeeks = state.weeks.length > 0;
+      const hasLength = state.tripLength !== '';
+      document.getElementById('datesNext').disabled = !(hasWeeks && hasLength);
+    }
+
+    /* ══════════════════════════════════════
+       SUBMIT & SAVE
+    ══════════════════════════════════════ */
+    function submitAndClose() {
+      state.wildcard = document.getElementById('wildcardInput').value;
+      state.completedAt = new Date().toISOString();
+
+      // Save to localStorage
+      const key = 'ledger_response_' + (state.guest || 'anonymous');
+      try {
+        localStorage.setItem(key, JSON.stringify(state));
+      } catch (e) {
+        // Storage may be unavailable in some contexts
+      }
+
+      goToScreen(6);
+    }
+
+    /* ══════════════════════════════════════
+       CALENDAR SAVE
+    ══════════════════════════════════════ */
+    function saveToCalendar() {
+      // Create an .ics file for May 2026
+      const ics = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//The Ledger//Trip//EN',
+        'BEGIN:VEVENT',
+        'DTSTART;VALUE=DATE:20260501',
+        'DTEND;VALUE=DATE:20260601',
+        'SUMMARY:Trip with Chloe + girls',
+        'DESCRIPTION:A trip together — May 2026. Details coming soon!',
+        'STATUS:TENTATIVE',
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ].join('\r\n');
+
+      const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'trip-with-chloe.ics';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+
+</body>
+</html>

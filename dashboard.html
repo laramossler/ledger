@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Ledger — Trip Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --cream:       #F8F4EB;
+      --cream-mid:   #EFE9DC;
+      --cream-dark:  #E5DDD0;
+      --ink:         #26242C;
+      --ink-mid:     #3E3B44;
+      --ink-light:   #625E6A;
+      --gold:        #A3965C;
+      --gold-pale:   #B8A96E;
+      --gold-glow:   rgba(184, 169, 110, 0.25);
+      --muted:       #8C8880;
+      --rule:        #C9BC98;
+      --white-soft:  #FDFCF7;
+      --green:       #6B8F5E;
+      --yellow:      #C9A44E;
+      --red-soft:    #B87070;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+      padding-bottom: 4rem;
+    }
+
+    /* ── Header ── */
+    .dash-header {
+      text-align: center;
+      padding: clamp(2.5rem, 6vw, 4rem) 2rem clamp(2rem, 4vw, 3rem);
+      border-bottom: 1px solid var(--cream-mid);
+    }
+
+    .dash-header .monogram {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--gold);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 300;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+    }
+
+    .dash-header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 300;
+      color: var(--ink);
+      margin-bottom: 0.3rem;
+    }
+
+    .dash-header .sub {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      color: var(--gold);
+    }
+
+    /* ── Content ── */
+    .dash-content {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ── Section ── */
+    .dash-section {
+      padding: 2.5rem 0;
+      border-bottom: 1px solid var(--cream-mid);
+    }
+
+    .dash-section:last-child { border-bottom: none; }
+
+    .section-label {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      text-align: center;
+      display: block;
+      margin-bottom: 0.8rem;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.4rem, 3.5vw, 1.8rem);
+      font-weight: 400;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 1.8rem;
+    }
+
+    /* ── Response Status ── */
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.8rem;
+    }
+
+    .status-card {
+      background: var(--white-soft);
+      border: 1px solid var(--cream-dark);
+      border-radius: 4px;
+      padding: 1.2rem;
+      text-align: center;
+    }
+
+    .status-card .name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 0.4rem;
+    }
+
+    .status-badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.7rem;
+      border-radius: 3px;
+      font-weight: 500;
+    }
+
+    .status-badge.completed {
+      background: rgba(107, 143, 94, 0.12);
+      color: var(--green);
+    }
+
+    .status-badge.opened {
+      background: rgba(201, 164, 78, 0.12);
+      color: var(--yellow);
+    }
+
+    .status-badge.pending {
+      background: rgba(140, 136, 128, 0.1);
+      color: var(--muted);
+    }
+
+    .nudge-btn {
+      display: inline-block;
+      margin-top: 0.6rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.7rem;
+      color: var(--gold);
+      background: none;
+      border: 1px solid var(--cream-dark);
+      border-radius: 3px;
+      padding: 0.3rem 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nudge-btn:hover {
+      border-color: var(--gold);
+    }
+
+    /* ── Vibe Synthesis ── */
+    .vibe-synthesis {
+      background: var(--white-soft);
+      border: 1px solid var(--cream-dark);
+      border-radius: 4px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .vibe-synthesis .insight {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--ink-mid);
+      text-align: center;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .archetype-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+    }
+
+    @media (min-width: 600px) {
+      .archetype-grid { grid-template-columns: repeat(6, 1fr); }
+    }
+
+    .archetype-item {
+      text-align: center;
+      position: relative;
+    }
+
+    .archetype-bar {
+      height: 48px;
+      border-radius: 3px;
+      margin-bottom: 0.4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .archetype-bar-fill {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-radius: 3px;
+      transition: height 0.6s ease;
+    }
+
+    .archetype-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.82rem;
+      color: var(--ink-mid);
+    }
+
+    .archetype-voters {
+      font-size: 0.65rem;
+      color: var(--muted);
+      margin-top: 0.15rem;
+    }
+
+    /* Archetype bar colors */
+    .archetype-item[data-vibe="restore"] .archetype-bar  { background: rgba(142, 197, 214, 0.15); }
+    .archetype-item[data-vibe="restore"] .archetype-bar-fill  { background: #8EC5D6; }
+    .archetype-item[data-vibe="explore"] .archetype-bar   { background: rgba(212, 165, 116, 0.15); }
+    .archetype-item[data-vibe="explore"] .archetype-bar-fill   { background: #D4A574; }
+    .archetype-item[data-vibe="indulge"] .archetype-bar   { background: rgba(155, 77, 94, 0.15); }
+    .archetype-item[data-vibe="indulge"] .archetype-bar-fill   { background: #9B4D5E; }
+    .archetype-item[data-vibe="escape"] .archetype-bar    { background: rgba(78, 197, 193, 0.15); }
+    .archetype-item[data-vibe="escape"] .archetype-bar-fill    { background: #4EC5C1; }
+    .archetype-item[data-vibe="adventure"] .archetype-bar { background: rgba(122, 155, 92, 0.15); }
+    .archetype-item[data-vibe="adventure"] .archetype-bar-fill { background: #7A9B5C; }
+    .archetype-item[data-vibe="celebrate"] .archetype-bar { background: rgba(107, 63, 160, 0.15); }
+    .archetype-item[data-vibe="celebrate"] .archetype-bar-fill { background: #6B3FA0; }
+
+    /* ── Wildcard Quotes ── */
+    .quote-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .quote-card {
+      background: var(--white-soft);
+      border: 1px solid var(--cream-dark);
+      border-radius: 4px;
+      padding: 1.4rem 1.6rem;
+      position: relative;
+    }
+
+    .quote-card::before {
+      content: '\201C';
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.5rem;
+      color: var(--gold);
+      position: absolute;
+      top: 0.4rem;
+      left: 0.8rem;
+      line-height: 1;
+      opacity: 0.35;
+    }
+
+    .quote-card .quote-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--ink-mid);
+      line-height: 1.6;
+      padding-left: 0.5rem;
+    }
+
+    .quote-card .quote-name {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      margin-top: 0.8rem;
+      padding-left: 0.5rem;
+    }
+
+    /* ── Date Calendar ── */
+    .calendar-overlap {
+      margin-bottom: 1.5rem;
+    }
+
+    .calendar-week-row {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 0.8rem;
+      align-items: center;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid var(--cream-mid);
+    }
+
+    .calendar-week-row:last-child { border-bottom: none; }
+
+    .calendar-week-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.95rem;
+      color: var(--ink-mid);
+    }
+
+    .calendar-week-label small {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .calendar-dots {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .calendar-dot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-size: 0.62rem;
+      font-weight: 500;
+    }
+
+    .calendar-dot.available {
+      background: rgba(107, 143, 94, 0.15);
+      color: var(--green);
+    }
+
+    .calendar-dot.unavailable {
+      background: rgba(140, 136, 128, 0.08);
+      color: var(--cream-dark);
+    }
+
+    .calendar-overlap-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-left: auto;
+    }
+
+    .overlap-bar {
+      height: 6px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .overlap-bar.full   { background: var(--green); width: 40px; }
+    .overlap-bar.most   { background: var(--yellow); width: 30px; }
+    .overlap-bar.some   { background: var(--cream-dark); width: 20px; }
+
+    .overlap-label {
+      font-size: 0.68rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .date-recommendation {
+      background: var(--white-soft);
+      border: 1px solid var(--green);
+      border-radius: 4px;
+      padding: 1.2rem;
+      text-align: center;
+    }
+
+    .date-recommendation .rec-dates {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 0.3rem;
+    }
+
+    .date-recommendation .rec-note {
+      font-size: 0.78rem;
+      color: var(--green);
+    }
+
+    /* Trip length summary */
+    .length-summary {
+      margin-top: 1.2rem;
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--ink-light);
+    }
+
+    /* ── Lock In ── */
+    .lock-section {
+      text-align: center;
+      padding: 2.5rem 0 1rem;
+    }
+
+    .btn-lock {
+      display: inline-block;
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      color: var(--cream);
+      border: none;
+      background: var(--gold);
+      padding: 1rem 3rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-lock:hover {
+      background: var(--ink);
+    }
+
+    .btn-lock:active {
+      transform: scale(0.97);
+    }
+
+    .lock-note {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 0.8rem;
+      font-style: italic;
+    }
+
+    /* ── Empty State ── */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .empty-state p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-style: italic;
+      color: var(--ink-light);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .empty-state .links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .invite-link-box {
+      background: var(--white-soft);
+      border: 1px solid var(--cream-dark);
+      border-radius: 4px;
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .invite-link-box .guest-label {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      flex-shrink: 0;
+      width: 50px;
+    }
+
+    .invite-link-box .link-text {
+      font-size: 0.78rem;
+      color: var(--ink-light);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .invite-link-box .copy-btn {
+      font-size: 0.68rem;
+      color: var(--gold);
+      background: none;
+      border: 1px solid var(--cream-dark);
+      border-radius: 3px;
+      padding: 0.25rem 0.6rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .invite-link-box .copy-btn:hover { border-color: var(--gold); }
+
+    /* ── Footer ── */
+    .dash-footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--cream-mid);
+      margin-top: 2rem;
+    }
+
+    .dash-footer p {
+      font-family: 'Cormorant SC', serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header class="dash-header">
+    <div class="monogram">L</div>
+    <h1>Chloe's Trip</h1>
+    <p class="sub">May 2026 &ensp;&middot;&ensp; 4 Women &ensp;&middot;&ensp; Somewhere Beautiful</p>
+  </header>
+
+  <div class="dash-content" id="dashContent">
+    <!-- Content injected by JS -->
+  </div>
+
+  <footer class="dash-footer">
+    <p>The Ledger &ensp;&middot;&ensp; A private record of the art of entertaining</p>
+  </footer>
+
+  <script>
+    /* ══════════════════════════════════════
+       CONFIGURATION
+    ══════════════════════════════════════ */
+    const GUESTS = ['Sarah', 'Priya', 'Amara'];
+    const ARCHETYPES = ['restore', 'explore', 'indulge', 'escape', 'adventure', 'celebrate'];
+    const ARCHETYPE_LABELS = {
+      restore: 'Restore',
+      explore: 'Explore',
+      indulge: 'Indulge',
+      escape: 'Escape',
+      adventure: 'Adventure',
+      celebrate: 'Celebrate'
+    };
+    const WEEKS = [
+      { key: 'may-4',  label: 'Week 1', dates: 'May 4\u201310' },
+      { key: 'may-11', label: 'Week 2', dates: 'May 11\u201317' },
+      { key: 'may-18', label: 'Week 3', dates: 'May 18\u201324' },
+      { key: 'may-25', label: 'Week 4', dates: 'May 25\u201331' }
+    ];
+
+    const VIBE_INSIGHTS = {
+      'restore,indulge': 'Your group is gravitating toward Restore + Indulge \u2014 think coastal luxury with incredible dining. Amalfi, Bali, or the south of France.',
+      'restore,escape': 'Your group wants to Restore + Escape \u2014 think secluded luxury. Maldives, a private villa in Bali, or the Greek islands.',
+      'explore,celebrate': 'Your group wants to Explore + Celebrate \u2014 think vibrant culture and nightlife. Marrakech, Tokyo, or Barcelona.',
+      'explore,indulge': 'Your group is drawn to Explore + Indulge \u2014 think cultural richness with incredible food. Italy, Japan, or Portugal.',
+      'adventure,escape': 'Your group craves Adventure + Escape \u2014 think remote and extraordinary. Safari in Kenya, Patagonia, or Iceland.',
+      'escape,celebrate': 'Your group wants to Escape + Celebrate \u2014 think tropical luxury with sparkle. Tulum, St. Barts, or Mykonos.',
+      'restore,explore': 'Your group is drawn to Restore + Explore \u2014 think wellness meets culture. Bali, Kyoto, or the Amalfi Coast.',
+      'default': 'Your group has diverse tastes \u2014 look for destinations that blend relaxation, culture, and a touch of adventure.'
+    };
+
+    /* ══════════════════════════════════════
+       LOAD RESPONSES
+    ══════════════════════════════════════ */
+    function loadResponses() {
+      const responses = {};
+      GUESTS.forEach(guest => {
+        const key = 'ledger_response_' + guest.toLowerCase();
+        const data = localStorage.getItem(key);
+        if (data) {
+          try {
+            responses[guest.toLowerCase()] = JSON.parse(data);
+          } catch (e) { /* skip malformed */ }
+        }
+      });
+      return responses;
+    }
+
+    /* ══════════════════════════════════════
+       RENDER DASHBOARD
+    ══════════════════════════════════════ */
+    function render() {
+      const responses = loadResponses();
+      const completedGuests = Object.keys(responses);
+      const container = document.getElementById('dashContent');
+
+      // Build the invite links section
+      const baseUrl = window.location.href.replace('dashboard.html', 'invite.html');
+
+      let html = '';
+
+      // ── Section: Invitation Links ──
+      html += `
+        <div class="dash-section">
+          <span class="section-label">Invitation Links</span>
+          <h2 class="section-title">Share with your girls</h2>
+          <div class="empty-state">
+            <div class="links">
+              ${GUESTS.map(g => {
+                const url = baseUrl + '?guest=' + g.toLowerCase();
+                return `
+                  <div class="invite-link-box">
+                    <span class="guest-label">${g}</span>
+                    <span class="link-text">${url}</span>
+                    <button class="copy-btn" onclick="copyLink('${url}', this)">Copy</button>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+
+      // ── Section: Response Status ──
+      html += `
+        <div class="dash-section">
+          <span class="section-label">Responses</span>
+          <h2 class="section-title">${completedGuests.length} of ${GUESTS.length} replied</h2>
+          <div class="status-grid">
+            ${GUESTS.map(g => {
+              const resp = responses[g.toLowerCase()];
+              let statusClass = 'pending';
+              let statusText = 'Not yet opened';
+              if (resp && resp.completedAt) {
+                statusClass = 'completed';
+                statusText = 'Completed';
+              }
+              return `
+                <div class="status-card">
+                  <div class="name">${g}</div>
+                  <span class="status-badge ${statusClass}">${statusText}</span>
+                  ${statusClass === 'pending' ? '<button class="nudge-btn" onclick="nudge(\'' + g + '\')">Send a nudge</button>' : ''}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+
+      // Only show analysis if there are responses
+      if (completedGuests.length > 0) {
+
+        // ── Section: Vibe Synthesis ──
+        const vibeCounts = {};
+        const vibeVoters = {};
+        ARCHETYPES.forEach(a => { vibeCounts[a] = 0; vibeVoters[a] = []; });
+
+        completedGuests.forEach(gKey => {
+          const resp = responses[gKey];
+          if (resp.vibes) {
+            resp.vibes.forEach(v => {
+              vibeCounts[v] = (vibeCounts[v] || 0) + 1;
+              vibeVoters[v] = vibeVoters[v] || [];
+              vibeVoters[v].push(gKey.charAt(0).toUpperCase() + gKey.slice(1));
+            });
+          }
+        });
+
+        const maxVotes = Math.max(...Object.values(vibeCounts), 1);
+
+        // Find top 2 vibes for insight
+        const topVibes = ARCHETYPES
+          .filter(a => vibeCounts[a] > 0)
+          .sort((a, b) => vibeCounts[b] - vibeCounts[a])
+          .slice(0, 2);
+
+        const insightKey = topVibes.join(',');
+        const insight = VIBE_INSIGHTS[insightKey] || VIBE_INSIGHTS['default'];
+
+        html += `
+          <div class="dash-section">
+            <span class="section-label">Vibe Check</span>
+            <h2 class="section-title">What the group is feeling</h2>
+            <div class="vibe-synthesis">
+              <p class="insight">${insight}</p>
+              <div class="archetype-grid">
+                ${ARCHETYPES.map(a => {
+                  const count = vibeCounts[a];
+                  const pct = (count / maxVotes) * 100;
+                  const voters = vibeVoters[a].join(', ');
+                  return `
+                    <div class="archetype-item" data-vibe="${a}">
+                      <div class="archetype-bar">
+                        <div class="archetype-bar-fill" style="height: ${pct}%"></div>
+                      </div>
+                      <div class="archetype-label">${ARCHETYPE_LABELS[a]}</div>
+                      <div class="archetype-voters">${voters || '\u2014'}</div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+
+        // ── Section: Wildcard Responses ──
+        const wildcards = completedGuests
+          .filter(gKey => responses[gKey].wildcard && responses[gKey].wildcard.trim())
+          .map(gKey => ({
+            name: gKey.charAt(0).toUpperCase() + gKey.slice(1),
+            text: responses[gKey].wildcard
+          }));
+
+        if (wildcards.length > 0) {
+          html += `
+            <div class="dash-section">
+              <span class="section-label">Dreams</span>
+              <h2 class="section-title">What they're wishing for</h2>
+              <div class="quote-cards">
+                ${wildcards.map(w => `
+                  <div class="quote-card">
+                    <p class="quote-text">${escapeHtml(w.text)}</p>
+                    <p class="quote-name">${w.name}</p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }
+
+        // ── Section: Date Availability ──
+        const weekAvailability = {};
+        WEEKS.forEach(w => { weekAvailability[w.key] = []; });
+
+        completedGuests.forEach(gKey => {
+          const resp = responses[gKey];
+          if (resp.weeks) {
+            resp.weeks.forEach(w => {
+              if (weekAvailability[w]) {
+                weekAvailability[w].push(gKey.charAt(0).toUpperCase() + gKey.slice(1));
+              }
+            });
+          }
+        });
+
+        // Find best week
+        let bestWeek = null;
+        let bestCount = 0;
+        WEEKS.forEach(w => {
+          if (weekAvailability[w.key].length > bestCount) {
+            bestCount = weekAvailability[w.key].length;
+            bestWeek = w;
+          }
+        });
+
+        // Trip length summary
+        const lengthCounts = {};
+        completedGuests.forEach(gKey => {
+          const len = responses[gKey].tripLength;
+          if (len) {
+            lengthCounts[len] = (lengthCounts[len] || 0) + 1;
+          }
+        });
+
+        const preferredLength = Object.entries(lengthCounts)
+          .sort((a, b) => b[1] - a[1])[0];
+
+        const lengthLabels = {
+          '3-4': '3\u20134 days',
+          '5-6': '5\u20136 days',
+          '7+': 'a full week'
+        };
+
+        html += `
+          <div class="dash-section">
+            <span class="section-label">Availability</span>
+            <h2 class="section-title">When everyone can go</h2>
+            <div class="calendar-overlap">
+              ${WEEKS.map(w => {
+                const available = weekAvailability[w.key];
+                const count = available.length;
+                const total = completedGuests.length;
+                let barClass = 'some';
+                if (count === total && total > 0) barClass = 'full';
+                else if (count >= total - 1 && count > 0) barClass = 'most';
+
+                return `
+                  <div class="calendar-week-row">
+                    <div class="calendar-week-label">
+                      ${w.label}
+                      <small>${w.dates}</small>
+                    </div>
+                    <div class="calendar-dots">
+                      ${GUESTS.map(g => {
+                        const isAvailable = available.map(a => a.toLowerCase()).includes(g.toLowerCase());
+                        const responded = responses[g.toLowerCase()];
+                        if (!responded) return `<span class="calendar-dot unavailable" title="${g}: no response">\u2014</span>`;
+                        return `<span class="calendar-dot ${isAvailable ? 'available' : 'unavailable'}" title="${g}: ${isAvailable ? 'available' : 'not available'}">${g.charAt(0)}</span>`;
+                      }).join('')}
+                      <div class="calendar-overlap-indicator">
+                        <div class="overlap-bar ${barClass}"></div>
+                        <span class="overlap-label">${count}/${total}</span>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+
+            ${bestWeek ? `
+              <div class="date-recommendation">
+                <div class="rec-dates">${bestWeek.dates}</div>
+                <div class="rec-note">${bestCount === completedGuests.length ? 'Works for everyone' : bestCount + ' of ' + completedGuests.length + ' available'}</div>
+              </div>
+            ` : ''}
+
+            ${preferredLength ? `
+              <p class="length-summary">Most of the group prefers ${lengthLabels[preferredLength[0]] || preferredLength[0]}</p>
+            ` : ''}
+          </div>
+        `;
+
+        // ── Lock In ──
+        html += `
+          <div class="lock-section">
+            <button class="btn-lock" onclick="lockIn()">Lock It In</button>
+            <p class="lock-note">This will confirm dates and move to planning</p>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+    }
+
+    /* ══════════════════════════════════════
+       HELPERS
+    ══════════════════════════════════════ */
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function copyLink(url, btn) {
+      navigator.clipboard.writeText(url).then(() => {
+        btn.textContent = 'Copied';
+        setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+      }).catch(() => {
+        // Fallback
+        const input = document.createElement('input');
+        input.value = url;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        btn.textContent = 'Copied';
+        setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+      });
+    }
+
+    function nudge(guest) {
+      alert('Nudge sent to ' + guest + '! (In production, this would send a follow-up via WhatsApp)');
+    }
+
+    function lockIn() {
+      alert('Dates locked! Moving to planning phase. (Phase 2 coming soon)');
+    }
+
+    /* ══════════════════════════════════════
+       INITIALIZE
+    ══════════════════════════════════════ */
+    render();
+
+    // Auto-refresh every 5 seconds to pick up new responses
+    setInterval(render, 5000);
+  </script>
+
+</body>
+</html>
