@@ -4,6 +4,9 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'The Ledger',
   description: 'A private record of the art of entertaining',
+  icons: {
+    icon: '/favicon.svg',
+  },
 }
 
 export default function RootLayout({
